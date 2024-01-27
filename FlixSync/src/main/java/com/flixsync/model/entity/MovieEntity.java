@@ -1,5 +1,6 @@
 package com.flixsync.model.entity;
 
+import com.flixsync.model.dto.movie.MovieInputDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 
@@ -34,4 +36,8 @@ public class MovieEntity {
 
     @Column(name = "summary")
     private String summary;
+
+    public MovieEntity(MovieInputDTO input){
+        BeanUtils.copyProperties(input, this);
+    }
 }

@@ -1,18 +1,25 @@
 package com.flixsync.controller;
 
+import com.flixsync.exceptions.DatabaseException;
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.service.MovieService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -35,6 +42,18 @@ public class MovieController {
     @PostMapping("/new")
     public ResponseEntity<MovieOutputDTO> save(@RequestBody @Valid MovieInputDTO movieInput){
         return new ResponseEntity<>(movieService.save(movieInput), HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<MovieOutputDTO> update(@RequestParam(name = "id") @Valid @Positive Integer id,
+                                                 @RequestParam(name = "name") Optional<String> name,
+                                                 @RequestParam(name = "hours")  Optional<Long> hours,
+                                                 @RequestParam(name = "minutes") Optional<Long> minutes,
+                                                 @RequestParam(name = "release-date") Optional<LocalDate> releaseDate,
+                                                 @RequestParam(name = "director") Optional<String> director,
+                                                 @RequestParam(name = "summary") Optional<String> summary)
+            throws EntityNotFoundException, InvalidParameterException {
+        return new ResponseEntity<>(movieService.update(id, name, hours, minutes, releaseDate, director, summary), HttpStatus.OK);
     }
 
     @GetMapping("/remove")

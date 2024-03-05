@@ -71,7 +71,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- HIPERSISTENCE UTILS -->
+		<!-- HYPERSISTENCE UTILS -->
 		<dependency>
 			<groupId>io.hypersistence</groupId>
 			<artifactId>hypersistence-utils-hibernate-63</artifactId>

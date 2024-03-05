@@ -1,11 +1,11 @@
 package com.flixsync.documentation;
 
-import com.flixsync.config.CustomGlobalExceptionHandler;
 import com.flixsync.config.ExceptionResponse;
 import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
+import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -116,12 +116,7 @@ public interface MovieControllerDoc {
     )
     @PutMapping("/{id}")
     ResponseEntity<MovieOutputDTO> update(@PathVariable(name = "id") @Positive Integer id,
-                                          @RequestParam(name = "name") Optional<String> name,
-                                          @RequestParam(name = "hours")  Optional<Long> hours,
-                                          @RequestParam(name = "minutes") Optional<Long> minutes,
-                                          @RequestParam(name = "release-date") Optional<LocalDate> releaseDate,
-                                          @RequestParam(name = "director") Optional<String> director,
-                                          @RequestParam(name = "summary") Optional<String> summary)
+                                          @RequestBody @Valid MovieUpdateInputDTO movieUpdateInput)
             throws EntityNotFoundException, InvalidParameterException;
 
 

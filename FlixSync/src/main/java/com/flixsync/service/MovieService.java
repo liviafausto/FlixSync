@@ -4,6 +4,7 @@ import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
+import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -37,40 +39,37 @@ public class MovieService {
         return new MovieOutputDTO(createdMovie);
     }
 
-    public MovieOutputDTO update(Integer movieId, Optional<String> name, Optional<Long> hours, Optional<Long> minutes,
-                                 Optional<LocalDate> releaseDate, Optional<String> director, Optional<String> summary)
+    public MovieOutputDTO update(Integer movieId, MovieUpdateInputDTO movieUpdateInput)
             throws EntityNotFoundException, InvalidParameterException {
+        final String NAME = movieUpdateInput.getName();
+        final Long HOURS = movieUpdateInput.getHours();
+        final Long MINUTES = movieUpdateInput.getMinutes();
+        final LocalDate RELEASE_DATE = movieUpdateInput.getReleaseDate();
+        final String DIRECTOR = movieUpdateInput.getDirector();
+        final String SUMMARY = movieUpdateInput.getSummary();
 
         // Data validation phase
-        if(name.isEmpty() && hours.isEmpty() && minutes.isEmpty() && releaseDate.isEmpty() && director.isEmpty() && summary.isEmpty()){
+        if(NAME == null && HOURS == null && MINUTES == null && RELEASE_DATE == null && DIRECTOR == null && SUMMARY == null){
             throw new InvalidParameterException("At least one parameter has to be updated!");
         }
 
-        if(name.isPresent() && name.get().length() > 255){
-            throw new InvalidParameterException("Name has too many characters");
-        }
-
-        if(hours.isPresent() && minutes.isEmpty() || hours.isEmpty() && minutes.isPresent()){
+        if(HOURS != null && MINUTES == null || HOURS == null && MINUTES != null){
             throw new InvalidParameterException("Both hours and minutes must be specified to update the movie's duration");
         }
 
-        if(director.isPresent() && director.get().length() > 100){
-            throw new InvalidParameterException("Director has too many characters");
-        }
-
         // Updating data
-        if(name.isPresent()) updateName(movieId, name.get());
+        if(NAME != null) updateName(movieId, NAME);
 
-        if(hours.isPresent()){ // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
-            Duration duration = Duration.ofHours(hours.get()).plusMinutes(minutes.get());
+        if(HOURS != null){ // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
+            Duration duration = Duration.ofHours(HOURS).plusMinutes(MINUTES);
             updateDuration(movieId, duration);
         }
 
-        if(releaseDate.isPresent()) updateReleaseDate(movieId, releaseDate.get());
+        if(RELEASE_DATE != null) updateReleaseDate(movieId, RELEASE_DATE);
 
-        if(director.isPresent()) updateDirector(movieId, director.get());
+        if(DIRECTOR != null) updateDirector(movieId, DIRECTOR);
 
-        if(summary.isPresent()) updateSummary(movieId, summary.get());
+        if(SUMMARY != null) updateSummary(movieId, SUMMARY);
 
         MovieEntity updatedMovie = getMovieById(movieId);
         return new MovieOutputDTO(updatedMovie);

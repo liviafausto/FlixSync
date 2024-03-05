@@ -1,15 +1,16 @@
 package com.flixsync.model.entity;
 
 import com.flixsync.model.dto.movie.MovieInputDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.BeanUtils;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 @Getter
@@ -17,16 +18,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "Movie")
+@Table(name = "Movie")
 public class MovieEntity {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name")
     private String name;
 
+    @Type(PostgreSQLIntervalType.class)
     @Column(name = "duration")
-    private String duration;
+    private Duration duration;
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
@@ -39,5 +43,8 @@ public class MovieEntity {
 
     public MovieEntity(MovieInputDTO input){
         BeanUtils.copyProperties(input, this);
+        Duration hours = Duration.ofHours(input.getHours());
+        Duration completeDuration = hours.plusMinutes(input.getMinutes());
+        this.setDuration(completeDuration);
     }
 }

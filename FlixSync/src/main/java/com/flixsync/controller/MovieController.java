@@ -1,6 +1,7 @@
 package com.flixsync.controller;
 
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.service.MovieService;
 import jakarta.validation.Valid;
@@ -31,4 +32,14 @@ public class MovieController {
         return new ResponseEntity<>(movieService.findById(id), HttpStatus.OK);
     }
 
+    @PostMapping("/new")
+    public ResponseEntity<MovieOutputDTO> save(@RequestBody @Valid MovieInputDTO movieInput){
+        return new ResponseEntity<>(movieService.save(movieInput), HttpStatus.OK);
+    }
+
+    @GetMapping("/remove")
+    public ResponseEntity<Void> delete(@RequestParam(name = "id") @Valid @Positive Integer id) throws EntityNotFoundException {
+        movieService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 @Service
@@ -41,7 +42,7 @@ public class MovieService {
         return new MovieOutputDTO(updatedMovie);
     }
 
-    public MovieOutputDTO updateDuration(Integer movieId, String duration) throws EntityNotFoundException{
+    public MovieOutputDTO updateDuration(Integer movieId, Duration duration) throws EntityNotFoundException{
         MovieEntity movie = getMovieById(movieId);
         movie.setDuration(duration);
         MovieEntity updatedMovie = movieRepository.save(movie);

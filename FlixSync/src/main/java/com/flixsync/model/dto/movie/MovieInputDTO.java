@@ -2,6 +2,7 @@ package com.flixsync.model.dto.movie;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +22,14 @@ public class MovieInputDTO {
     private String name;
 
     @NotNull
-    @Schema(description = "The movie's duration, formatted as 'X hours XX minutes'", example = "2 hours 28 minutes")
-    private String duration;
+    @PositiveOrZero
+    @Schema(description = "The amount of hours of the movie")
+    private long hours;
+
+    @NotNull
+    @PositiveOrZero
+    @Schema(description = "The amount of minutes of the movie")
+    private long minutes;
 
     @NotNull
     @Schema(description = "The movie's release date, formatted as 'YYYY-MM-DD'", example = "2010-09-24")

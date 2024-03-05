@@ -21,17 +21,14 @@ public class MovieInputDTO {
     @Schema(description = "The movie's name")
     private String name;
 
-    @NotNull(message = "hours: can't be null")
     @PositiveOrZero(message = "hours: must be greater than zero")
     @Schema(description = "The amount of hours of the movie", example = "2")
     private long hours;
 
-    @NotNull(message = "minutes: can't be null")
     @PositiveOrZero(message = "minutes: must be greater than zero")
     @Schema(description = "The amount of minutes of the movie", example = "28")
     private long minutes;
 
-    @NotNull(message = "releaseDate: can't be null")
     @Schema(description = "The movie's release date, formatted as 'YYYY-MM-DD'", example = "2010-09-24")
     private LocalDate releaseDate;
 

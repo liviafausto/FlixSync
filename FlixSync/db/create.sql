@@ -3,8 +3,8 @@ SET search_path TO public;
 CREATE TABLE Movie(
     id SERIAL NOT NULL,
     name VARCHAR(255) NOT NULL,
-    duration INTERVAL NOT NULL,
-    release_date DATE NOT NULL,
+    duration INTERVAL,
+    release_date DATE,
     director VARCHAR(100) NOT NULL,
     summary TEXT,
     CONSTRAINT pk_movie PRIMARY KEY(id)

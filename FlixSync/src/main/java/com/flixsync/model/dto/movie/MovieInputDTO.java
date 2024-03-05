@@ -16,27 +16,27 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieInputDTO {
-    @NotNull
-    @Size(max = 255)
+    @NotNull(message = "name: can't be null")
+    @Size(max = 255, message = "name: too many characters")
     @Schema(description = "The movie's name")
     private String name;
 
-    @NotNull
-    @PositiveOrZero
-    @Schema(description = "The amount of hours of the movie")
+    @NotNull(message = "hours: can't be null")
+    @PositiveOrZero(message = "hours: must be greater than zero")
+    @Schema(description = "The amount of hours of the movie", example = "2")
     private long hours;
 
-    @NotNull
-    @PositiveOrZero
-    @Schema(description = "The amount of minutes of the movie")
+    @NotNull(message = "minutes: can't be null")
+    @PositiveOrZero(message = "minutes: must be greater than zero")
+    @Schema(description = "The amount of minutes of the movie", example = "28")
     private long minutes;
 
-    @NotNull
+    @NotNull(message = "releaseDate: can't be null")
     @Schema(description = "The movie's release date, formatted as 'YYYY-MM-DD'", example = "2010-09-24")
     private LocalDate releaseDate;
 
-    @NotNull
-    @Size(max = 100)
+    @NotNull(message = "director: can't be null")
+    @Size(max = 100, message = "director: too many characters")
     @Schema(description = "The movie's main director")
     private String director;
 

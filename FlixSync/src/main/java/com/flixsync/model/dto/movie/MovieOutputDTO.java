@@ -15,10 +15,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieOutputDTO {
-    @Schema(description = "The movie's unique identifier")
+    @Schema(description = "The movie's unique identifier", example = "1")
     private Integer id;
 
-    @Schema(description = "The movie's name")
+    @Schema(description = "The movie's name", example = "Inception")
     private String name;
 
     @Schema(description = "The movie's duration, formatted as 'X hours XX minutes'", example = "2 hours 28 minutes")
@@ -27,10 +27,10 @@ public class MovieOutputDTO {
     @Schema(description = "The movie's release date, formatted as 'YYYY-MM-DD'", example = "2010-09-24")
     private LocalDate releaseDate;
 
-    @Schema(description = "The movie's main director")
+    @Schema(description = "The movie's main director", example = "Christopher Nolan")
     private String director;
 
-    @Schema(description = "A brief summary of the movie (no spoilers)")
+    @Schema(description = "A brief summary of the movie (no spoilers)", example = "A thief who steals corporate secrets through the use of dream-sharing technology...")
     private String summary;
 
     public MovieOutputDTO(MovieEntity entity){

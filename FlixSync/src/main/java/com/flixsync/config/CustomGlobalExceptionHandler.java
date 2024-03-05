@@ -2,6 +2,7 @@ package com.flixsync.config;
 
 import com.flixsync.exceptions.DatabaseException;
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleException(EntityNotFoundException exception) {
         final HttpStatus STATUS = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(STATUS).body(createBody(exception, STATUS));
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<Object> handleException(InvalidParameterException exception) {
+        final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(STATUS).body(createBody(exception, STATUS));
     }
 

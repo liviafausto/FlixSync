@@ -47,4 +47,12 @@ public class MovieEntity {
         Duration completeDuration = hours.plusMinutes(input.getMinutes());
         this.setDuration(completeDuration);
     }
+
+    public Long getDurationsHours(){
+        return this.duration.getSeconds() / 3600;
+    }
+
+    public Long getDurationsMinutes(){
+        return (this.duration.getSeconds() % 3600) / 60;
+    }
 }

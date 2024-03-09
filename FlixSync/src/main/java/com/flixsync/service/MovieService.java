@@ -77,18 +77,38 @@ public class MovieService {
 
         // Updating data
         MovieEntity movie = getMovieById(movieId);
-        if(NAME != null) movie = updateName(movie, NAME);
-        if(HOURS != null){ // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
+        boolean movieUpdated = false;
+
+        if(NAME != null && !NAME.equals(movie.getName())){
+            movie = updateName(movie, NAME);
+            movieUpdated = true;
+        }
+        if(HOURS != null && (!HOURS.equals(movie.getDurationsHours()) || !MINUTES.equals(movie.getDurationsMinutes()))){
+            // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
             Duration duration = Duration.ofHours(HOURS).plusMinutes(MINUTES);
             movie = updateDuration(movie, duration);
+            movieUpdated = true;
         }
-        if(RELEASE_DATE != null) movie = updateReleaseDate(movie, RELEASE_DATE);
-        if(DIRECTOR != null) movie = updateDirector(movie, DIRECTOR);
-        if(SUMMARY != null) movie = updateSummary(movie, SUMMARY);
+        if(RELEASE_DATE != null && !RELEASE_DATE.equals(movie.getReleaseDate())){
+            movie = updateReleaseDate(movie, RELEASE_DATE);
+            movieUpdated = true;
+        }
+        if(DIRECTOR != null && !DIRECTOR.equals(movie.getDirector())){
+            movie = updateDirector(movie, DIRECTOR);
+            movieUpdated = true;
+        }
+        if(SUMMARY != null && !SUMMARY.equals(movie.getSummary())){
+            movie = updateSummary(movie, SUMMARY);
+            movieUpdated = true;
+        }
 
         MovieOutputDTO movieOutput = new MovieOutputDTO(movie);
-        log.info("<< UPDATE >> Movie updated --> {id='{}', name='{}', duration='{}', releaseDate='{}', director='{}', summary='{}'}",
-                movieOutput.getId(), movieOutput.getName(), movieOutput.getDuration(), movieOutput.getReleaseDate(), movieOutput.getDirector(), movieOutput.getSummary());
+        if(movieUpdated){
+            log.info("<< UPDATE >> Movie updated --> {id='{}', name='{}', duration='{}', releaseDate='{}', director='{}', summary='{}'}",
+                    movieOutput.getId(), movieOutput.getName(), movieOutput.getDuration(), movieOutput.getReleaseDate(), movieOutput.getDirector(), movieOutput.getSummary());
+        }else{
+            log.error("<< UPDATE >> No new data was provided, so nothing was updated");
+        }
         log.info("<< UPDATE >> End of service");
         return movieOutput;
     }

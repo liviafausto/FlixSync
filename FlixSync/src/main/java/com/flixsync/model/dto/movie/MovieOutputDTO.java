@@ -35,10 +35,14 @@ public class MovieOutputDTO {
 
     public MovieOutputDTO(MovieEntity entity){
         BeanUtils.copyProperties(entity, this);
+        this.setDuration(getDurationOutput(entity));
+    }
+
+    public static String getDurationOutput(MovieEntity entity){
         final long DURATION_IN_SECONDS = entity.getDuration().getSeconds();
         final long HOURS = DURATION_IN_SECONDS / 3600;
         final long MINUTES = (DURATION_IN_SECONDS % 3600) / 60;
-        final String DURATION_STRING = HOURS + " hours " + MINUTES + " minutes";
-        this.setDuration(DURATION_STRING);
+        return HOURS + " hours " + MINUTES + " minutes";
     }
+
 }

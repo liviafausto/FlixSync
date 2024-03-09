@@ -8,7 +8,6 @@ import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
 import com.flixsync.service.MovieService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -17,11 +17,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final String CATEGORY = "category";
-    private final String CATEGORIES = "categories";
 
     public Page<CategoryOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-ALL", CATEGORY, CATEGORIES);
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-ALL", "category");
         serviceLog.start("Find all categories");
 
         serviceLog.pageRequest(pageNumber, amountPerPage);
@@ -33,7 +31,7 @@ public class CategoryService {
     }
 
     public CategoryOutputDTO findById(Integer categoryId) throws EntityNotFoundException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-BY-ID", CATEGORY, CATEGORIES);
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-BY-ID", "category");
         serviceLog.start("Find a category by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
@@ -43,7 +41,7 @@ public class CategoryService {
     }
 
     public CategoryOutputDTO save(String name){
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-SAVE", CATEGORY, CATEGORIES);
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-SAVE", "category");
         serviceLog.start("Register a category");
 
         serviceLog.saveRequest("{name: '" + name + "'}");
@@ -56,7 +54,7 @@ public class CategoryService {
     }
 
     public CategoryOutputDTO update(Integer categoryId, String name) throws EntityNotFoundException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE-NAME", CATEGORY, CATEGORIES);
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE-NAME", "category");
         serviceLog.start("Update a category by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
@@ -70,7 +68,7 @@ public class CategoryService {
     }
 
     public void delete(Integer categoryId) throws EntityNotFoundException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-DELETE", CATEGORY, CATEGORIES);
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-DELETE", "category");
         serviceLog.start("Remove a category by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);

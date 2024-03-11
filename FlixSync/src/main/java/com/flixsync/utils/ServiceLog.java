@@ -7,13 +7,11 @@ public class ServiceLog {
     private long startTime;
     private final String SERVICE_NAME;
     private final String ELEMENT_NAME;
-    private final String ELEMENT_PLURAL;
     private final String CAPITALIZED_ELEMENT_NAME;
 
-    public ServiceLog(String SERVICE_NAME, String ELEMENT_NAME, String ELEMENT_PLURAL){
+    public ServiceLog(String SERVICE_NAME, String ELEMENT_NAME){
         this.SERVICE_NAME = "<<" + SERVICE_NAME + ">>";
         this.ELEMENT_NAME = ELEMENT_NAME;
-        this.ELEMENT_PLURAL = ELEMENT_PLURAL;
         this.CAPITALIZED_ELEMENT_NAME = ELEMENT_NAME.substring(0,1).toUpperCase() + ELEMENT_NAME.substring(1);
     }
 
@@ -28,11 +26,11 @@ public class ServiceLog {
     }
 
     public void pageRequest(Integer pageNumber, Integer amountPerPage){
-        log.info("{} Requesting page {} with {} {}", SERVICE_NAME, pageNumber, amountPerPage, ELEMENT_PLURAL);
+        log.info("{} Requesting page {} with {} elements", SERVICE_NAME, pageNumber, amountPerPage);
     }
 
     public void pageResponse(Integer numberOfElements){
-        log.info("{} {} {} were retrieved", SERVICE_NAME, numberOfElements, ELEMENT_PLURAL);
+        log.info("{} {} elements were retrieved", SERVICE_NAME, numberOfElements);
     }
 
     public void searchRequest(Integer id){

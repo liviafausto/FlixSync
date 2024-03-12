@@ -54,13 +54,11 @@ public class CategoryService {
     }
 
     public CategoryOutputDTO update(Integer categoryId, String name) throws EntityNotFoundException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE-NAME", "category");
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE", "category");
         serviceLog.start("Update a category by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
-        serviceLog.updateRequest("name", categoryId, category.getName(), name);
-        category.setName(name);
-        CategoryEntity updatedCategory = categoryRepository.save(category);
+        CategoryEntity updatedCategory = updateName(category, name);
         serviceLog.updateResponse(updatedCategory.toString());
 
         serviceLog.end();
@@ -91,5 +89,12 @@ public class CategoryService {
 
         serviceLog.searchResponse(category.get().toString());
         return category.get();
+    }
+
+    private CategoryEntity updateName(CategoryEntity category, String newName){
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE-NAME", "category");
+        serviceLog.updateRequest("name", category.getId(), category.getName(), newName);
+        category.setName(newName);
+        return categoryRepository.save(category);
     }
 }

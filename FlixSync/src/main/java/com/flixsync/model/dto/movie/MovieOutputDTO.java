@@ -1,5 +1,6 @@
 package com.flixsync.model.dto.movie;
 
+import com.flixsync.utils.MovieDuration;
 import com.flixsync.model.entity.MovieEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -35,11 +36,8 @@ public class MovieOutputDTO {
 
     public MovieOutputDTO(MovieEntity entity){
         BeanUtils.copyProperties(entity, this);
-        this.setDuration(getDurationOutput(entity));
-    }
-
-    public static String getDurationOutput(MovieEntity entity){
-        return entity.getDurationsHours() + " hours " + entity.getDurationsMinutes() + " minutes";
+        String durationString = MovieDuration.format(entity.getDuration());
+        this.setDuration(durationString);
     }
 
 }

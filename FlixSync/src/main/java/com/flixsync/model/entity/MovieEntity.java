@@ -1,6 +1,7 @@
 package com.flixsync.model.entity;
 
 import com.flixsync.model.dto.movie.MovieInputDTO;
+import com.flixsync.utils.MovieDuration;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,16 +44,17 @@ public class MovieEntity {
 
     public MovieEntity(MovieInputDTO input){
         BeanUtils.copyProperties(input, this);
-        Duration hours = Duration.ofHours(input.getHours());
-        Duration completeDuration = hours.plusMinutes(input.getMinutes());
-        this.setDuration(completeDuration);
+        Duration duration = MovieDuration.getDuration(input.getHours(), input.getMinutes());
+        this.setDuration(duration);
     }
 
-    public Long getDurationsHours(){
-        return this.duration.getSeconds() / 3600;
-    }
-
-    public Long getDurationsMinutes(){
-        return (this.duration.getSeconds() % 3600) / 60;
+    @Override
+    public String toString() {
+        return "{id: '" + id + "', " +
+                "name: '" + name + "', " +
+                "duration: '" + MovieDuration.format(duration) + "', " +
+                "releaseDate: '" + releaseDate + "', " +
+                "director: '" + director + "', " +
+                "summary: '" + summary + "'}";
     }
 }

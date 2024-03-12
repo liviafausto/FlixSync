@@ -5,13 +5,13 @@ import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
+import com.flixsync.utils.MovieDuration;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.MovieRepository;
+import com.flixsync.utils.ServiceLog;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,150 +19,162 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Optional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MovieService {
     private final MovieRepository movieRepository;
 
     public Page<MovieOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
-        log.info("<< FIND-ALL >> Service started: Find all movies");
-        log.info("<< FIND-ALL >> Retrieving page {} with {} movies", pageNumber, amountPerPage);
-        Pageable pageable = PageRequest.of(pageNumber, amountPerPage, Sort.by("id"));
-        Page<MovieEntity> movies = movieRepository.findAll(pageable);
-        log.info("<< FIND-ALL >> {} movies were retrieved!", movies.getNumberOfElements());
-        log.info("<< FIND-ALL >> End of service");
+        ServiceLog serviceLog = new ServiceLog("MOVIE-FIND-ALL", "movie");
+        serviceLog.start("Find all movies");
+
+        serviceLog.pageRequest(pageNumber, amountPerPage);
+        Page<MovieEntity> movies = movieRepository.findAll(PageRequest.of(pageNumber, amountPerPage, Sort.by("id")));
+        serviceLog.pageResponse(movies.getNumberOfElements());
+
+        serviceLog.end();
         return movies.map(MovieOutputDTO::new);
     }
 
     public MovieOutputDTO findById(Integer movieId) throws EntityNotFoundException{
-        log.info("<< FIND-BY-ID >> Service started: Find a movie by id");
-        MovieOutputDTO movieOutput = new MovieOutputDTO(getMovieById(movieId));
-        log.info("<< FIND-BY-ID >> End of service");
-        return movieOutput;
+        ServiceLog serviceLog = new ServiceLog("MOVIE-FIND-BY-ID", "movie");
+        serviceLog.start("Find a movie by id");
+
+        MovieEntity movie = getMovieById(movieId, serviceLog);
+
+        serviceLog.end();
+        return new MovieOutputDTO(movie);
     }
 
-    public MovieOutputDTO save(MovieInputDTO input){
-        log.info("<< SAVE >> Service started: Register a movie");
-        MovieEntity movie = new MovieEntity(input);
-        log.info("<< SAVE >> Inserting a new movie in the database --> {name='{}', duration='{}', releaseDate='{}', director='{}', summary='{}'}",
-                movie.getName(), MovieOutputDTO.getDurationOutput(movie), movie.getReleaseDate(), movie.getDirector(), movie.getSummary());
+    public MovieOutputDTO save(MovieInputDTO movieInput){
+        ServiceLog serviceLog = new ServiceLog("MOVIE-SAVE", "movie");
+        serviceLog.start("Register a movie");
+
+        serviceLog.saveRequest(movieInput.toString());
+        MovieEntity movie = new MovieEntity(movieInput);
         MovieEntity createdMovie = movieRepository.save(movie);
-        MovieOutputDTO movieOutput = new MovieOutputDTO(createdMovie);
-        log.info("<< SAVE >> Movie inserted --> {id='{}', name='{}', duration='{}', releaseDate='{}', director='{}', summary='{}'}",
-                movieOutput.getId(), movieOutput.getName(), movieOutput.getDuration(), movieOutput.getReleaseDate(), movieOutput.getDirector(), movieOutput.getSummary());
-        log.info("<< SAVE >> End of service");
-        return movieOutput;
+        serviceLog.saveResponse(createdMovie.toString());
+
+        serviceLog.end();
+        return new MovieOutputDTO(createdMovie);
     }
 
     public MovieOutputDTO update(Integer movieId, MovieUpdateInputDTO movieUpdateInput)
             throws EntityNotFoundException, InvalidParameterException {
-        log.info("<< UPDATE >> Service started: Update a movie by id");
-        final String NAME = movieUpdateInput.getName();
-        final Long HOURS = movieUpdateInput.getHours();
-        final Long MINUTES = movieUpdateInput.getMinutes();
-        final LocalDate RELEASE_DATE = movieUpdateInput.getReleaseDate();
-        final String DIRECTOR = movieUpdateInput.getDirector();
-        final String SUMMARY = movieUpdateInput.getSummary();
+        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE", "movie");
+        serviceLog.start("Update a movie by id");
+
+        final String NEW_NAME = movieUpdateInput.getName();
+        final Long NEW_HOURS = movieUpdateInput.getHours();
+        final Long NEW_MINUTES = movieUpdateInput.getMinutes();
+        final LocalDate NEW_RELEASE_DATE = movieUpdateInput.getReleaseDate();
+        final String NEW_DIRECTOR = movieUpdateInput.getDirector();
+        final String NEW_SUMMARY = movieUpdateInput.getSummary();
 
         // Data validation phase
-        if(NAME == null && HOURS == null && MINUTES == null && RELEASE_DATE == null && DIRECTOR == null && SUMMARY == null){
-            log.error("<< UPDATE >> No parameters were provided");
+        if(NEW_NAME == null && NEW_HOURS == null && NEW_MINUTES == null && NEW_RELEASE_DATE == null && NEW_DIRECTOR == null && NEW_SUMMARY == null){
+            serviceLog.error("No parameters were provided");
+            serviceLog.end();
             throw new InvalidParameterException("At least one parameter has to be provided!");
         }
-        if(HOURS != null && MINUTES == null || HOURS == null && MINUTES != null){
-            log.error("<< UPDATE >> Movie's duration wasn't correctly informed");
+        if(NEW_HOURS != null && NEW_MINUTES == null || NEW_HOURS == null && NEW_MINUTES != null){
+            serviceLog.error("Movie's duration wasn't correctly informed");
+            serviceLog.end();
             throw new InvalidParameterException("Both hours and minutes must be specified to update the movie's duration");
         }
 
         // Updating data
-        MovieEntity movie = getMovieById(movieId);
+        MovieEntity movie = getMovieById(movieId, serviceLog);
+        final Duration DURATION = movie.getDuration();
         boolean movieUpdated = false;
 
-        if(NAME != null && !NAME.equals(movie.getName())){
-            movie = updateName(movie, NAME);
+        if(NEW_NAME != null && !NEW_NAME.equals(movie.getName())){
+            movie = updateName(movie, NEW_NAME);
             movieUpdated = true;
         }
-        if(HOURS != null && (!HOURS.equals(movie.getDurationsHours()) || !MINUTES.equals(movie.getDurationsMinutes()))){
+        if(NEW_HOURS != null && (!NEW_HOURS.equals(MovieDuration.getHours(DURATION)) || !NEW_MINUTES.equals(MovieDuration.getMinutes(DURATION)))){
             // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
-            Duration duration = Duration.ofHours(HOURS).plusMinutes(MINUTES);
-            movie = updateDuration(movie, duration);
+            movie = updateDuration(movie, MovieDuration.getDuration(NEW_HOURS, NEW_MINUTES));
             movieUpdated = true;
         }
-        if(RELEASE_DATE != null && !RELEASE_DATE.equals(movie.getReleaseDate())){
-            movie = updateReleaseDate(movie, RELEASE_DATE);
+        if(NEW_RELEASE_DATE != null && !NEW_RELEASE_DATE.equals(movie.getReleaseDate())){
+            movie = updateReleaseDate(movie, NEW_RELEASE_DATE);
             movieUpdated = true;
         }
-        if(DIRECTOR != null && !DIRECTOR.equals(movie.getDirector())){
-            movie = updateDirector(movie, DIRECTOR);
+        if(NEW_DIRECTOR != null && !NEW_DIRECTOR.equals(movie.getDirector())){
+            movie = updateDirector(movie, NEW_DIRECTOR);
             movieUpdated = true;
         }
-        if(SUMMARY != null && !SUMMARY.equals(movie.getSummary())){
-            movie = updateSummary(movie, SUMMARY);
+        if(NEW_SUMMARY != null && !NEW_SUMMARY.equals(movie.getSummary())){
+            movie = updateSummary(movie, NEW_SUMMARY);
             movieUpdated = true;
         }
 
-        MovieOutputDTO movieOutput = new MovieOutputDTO(movie);
-        if(movieUpdated){
-            log.info("<< UPDATE >> Movie updated --> {id='{}', name='{}', duration='{}', releaseDate='{}', director='{}', summary='{}'}",
-                    movieOutput.getId(), movieOutput.getName(), movieOutput.getDuration(), movieOutput.getReleaseDate(), movieOutput.getDirector(), movieOutput.getSummary());
-        }else{
-            log.error("<< UPDATE >> No new data was provided, so nothing was updated");
-        }
-        log.info("<< UPDATE >> End of service");
-        return movieOutput;
+        if(movieUpdated) serviceLog.updateResponse(movie.toString());
+        else serviceLog.error("No new data was provided, so nothing was updated");
+
+        serviceLog.end();
+        return new MovieOutputDTO(movie);
     }
 
     public void delete(Integer movieId) throws EntityNotFoundException{
-        log.info("<< DELETE >> Service started: Remove a movie by id");
-        MovieEntity movie = getMovieById(movieId);
-        log.info("<< DELETE >> Removing movie from the database --> {id='{}', name='{}', director='{}'}",
-                movie.getId(), movie.getName(), movie.getDirector());
+        ServiceLog serviceLog = new ServiceLog("MOVIE-DELETE", "movie");
+        serviceLog.start("Remove a movie by id");
+
+        MovieEntity movie = getMovieById(movieId, serviceLog);
+        serviceLog.deleteRequest(movie.toString());
         movieRepository.delete(movie);
-        log.info("<< DELETE >> End of service");
+        serviceLog.deleteResponse(movieId);
+
+        serviceLog.end();
     }
 
-    private MovieEntity getMovieById(Integer movieId) throws EntityNotFoundException{
-        log.info("<< FIND-BY-ID >> Searching for movie - ID: {}", movieId);
-        Optional<MovieEntity> optionalMovie = movieRepository.findById(movieId);
-        if(optionalMovie.isPresent()){
-            MovieEntity movie = optionalMovie.get();
-            final String DURATION = MovieOutputDTO.getDurationOutput(movie);
-            log.info("<< FIND-BY-ID >> Movie found --> {id='{}', name='{}', duration='{}', releaseDate='{}', director='{}', summary='{}'}",
-                    movie.getId(), movie.getName(), DURATION, movie.getReleaseDate(), movie.getDirector(), movie.getSummary());
-            return movie;
+    private MovieEntity getMovieById(Integer movieId, ServiceLog serviceLog) throws EntityNotFoundException{
+        serviceLog.searchRequest(movieId);
+        Optional<MovieEntity> movie = movieRepository.findById(movieId);
+
+        if(movie.isEmpty()){
+            serviceLog.error("Movie not found");
+            serviceLog.end();
+            throw new EntityNotFoundException("Movie not found");
         }
-        log.error("<< FIND-BY-ID >> Movie not found");
-        throw new EntityNotFoundException("Movie not found");
+
+        serviceLog.searchResponse(movie.get().toString());
+        return movie.get();
     }
 
-    private MovieEntity updateName(MovieEntity movie, String name) throws EntityNotFoundException{
-        log.info("<< UPDATE-NAME >> Updating movie's name --> {id='{}', current='{}', new='{}'}", movie.getId(), movie.getName(), name);
-        movie.setName(name);
+    private MovieEntity updateName(MovieEntity movie, String newName){
+        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-NAME", "movie");
+        serviceLog.updateRequest("name", movie.getId(), movie.getName(), newName);
+        movie.setName(newName);
         return movieRepository.save(movie);
     }
 
-    private MovieEntity updateDuration(MovieEntity movie, Duration duration) throws EntityNotFoundException{
-        log.info("<< UPDATE-DURATION >> Updating movie's duration --> {id='{}', current='{}', new='{}'}", movie.getId(), movie.getDuration(), duration);
-        movie.setDuration(duration);
+    private MovieEntity updateDuration(MovieEntity movie, Duration newDuration){
+        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-DURATION", "movie");
+        serviceLog.updateRequest("duration", movie.getId(), MovieDuration.format(movie.getDuration()), MovieDuration.format(newDuration));
+        movie.setDuration(newDuration);
         return movieRepository.save(movie);
     }
 
-    private MovieEntity updateReleaseDate(MovieEntity movie, LocalDate releaseDate) throws EntityNotFoundException{
-        log.info("<< UPDATE-RELEASE-DATE >> Updating movie's release date --> {id='{}', current='{}', new='{}'}", movie.getId(), movie.getReleaseDate(), releaseDate);
-        movie.setReleaseDate(releaseDate);
+    private MovieEntity updateReleaseDate(MovieEntity movie, LocalDate newReleaseDate){
+        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-RELEASE-DATE", "movie");
+        serviceLog.updateRequest("release date", movie.getId(), movie.getReleaseDate().toString(), newReleaseDate.toString());
+        movie.setReleaseDate(newReleaseDate);
         return movieRepository.save(movie);
     }
 
-    private MovieEntity updateDirector(MovieEntity movie, String director) throws EntityNotFoundException{
-        log.info("<< UPDATE-DIRECTOR >> Updating movie's director --> {id='{}', current='{}', new='{}'}", movie.getId(), movie.getDirector(), director);
-        movie.setDirector(director);
+    private MovieEntity updateDirector(MovieEntity movie, String newDirector){
+        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-DIRECTOR", "movie");
+        serviceLog.updateRequest("director", movie.getId(), movie.getDirector(), newDirector);
+        movie.setDirector(newDirector);
         return movieRepository.save(movie);
     }
 
-    private MovieEntity updateSummary(MovieEntity movie, String summary) throws EntityNotFoundException{
-        log.info("<< UPDATE-SUMMARY >> Updating movie's summary --> {id='{}', current='{}', new='{}'}", movie.getId(), movie.getSummary(), summary);
-        movie.setSummary(summary);
+    private MovieEntity updateSummary(MovieEntity movie, String newSummary){
+        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-SUMMARY", "movie");
+        serviceLog.updateRequest("summary", movie.getId(), movie.getSummary(), newSummary);
+        movie.setSummary(newSummary);
         return movieRepository.save(movie);
     }
 

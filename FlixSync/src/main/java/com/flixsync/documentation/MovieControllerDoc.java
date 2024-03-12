@@ -26,9 +26,7 @@ public interface MovieControllerDoc {
     )
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Returns a page containing the specified amount of movies", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = MovieOutputDTO.class))
-                    }),
+                    @ApiResponse(responseCode = "200", description = "Returns a page containing the specified amount of movies"),
                     @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),

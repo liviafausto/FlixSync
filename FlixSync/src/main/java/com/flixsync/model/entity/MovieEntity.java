@@ -1,5 +1,6 @@
 package com.flixsync.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.utils.MovieDuration;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
@@ -13,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,6 +43,15 @@ public class MovieEntity {
 
     @Column(name = "summary")
     private String summary;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "Movie_Category",
+            joinColumns = @JoinColumn(name = "id_movie"),
+            inverseJoinColumns = @JoinColumn(name = "id_category")
+    )
+    private Set<CategoryEntity> categories;
 
     public MovieEntity(MovieInputDTO input){
         BeanUtils.copyProperties(input, this);

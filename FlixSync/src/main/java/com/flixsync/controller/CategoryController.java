@@ -3,6 +3,7 @@ package com.flixsync.controller;
 import com.flixsync.documentation.CategoryControllerDoc;
 import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
+import com.flixsync.model.dto.category.CategoryMoviesListDTO;
 import com.flixsync.model.dto.category.CategoryOutputDTO;
 import com.flixsync.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,11 @@ public class CategoryController implements CategoryControllerDoc {
     @Override
     public ResponseEntity<CategoryOutputDTO> findById(Integer id) throws EntityNotFoundException {
         return new ResponseEntity<>(categoryService.findById(id), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<CategoryMoviesListDTO> findMoviesById(Integer categoryId) throws EntityNotFoundException {
+        return new ResponseEntity<>(categoryService.findMoviesById(categoryId), HttpStatus.OK);
     }
 
     @Override

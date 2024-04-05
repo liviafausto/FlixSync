@@ -1,7 +1,9 @@
 package com.flixsync.service;
 
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.model.dto.category.CategoryMoviesListDTO;
 import com.flixsync.model.dto.category.CategoryOutputDTO;
+import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.repository.CategoryRepository;
 import com.flixsync.utils.ServiceLog;
@@ -39,6 +41,18 @@ public class CategoryService {
 
         serviceLog.end();
         return new CategoryOutputDTO(category);
+    }
+
+    public CategoryMoviesListDTO findMoviesById(Integer categoryId) throws EntityNotFoundException {
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-MOVIES-BY-ID", "category");
+        serviceLog.start("Find all category's movies list by id");
+
+        CategoryEntity category = getCategoryById(categoryId, serviceLog);
+        CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(category);
+        serviceLog.info("Category's movies list --> " + moviesList.getMovies().toString());
+
+        serviceLog.end();
+        return moviesList;
     }
 
     public CategoryOutputDTO save(String name){

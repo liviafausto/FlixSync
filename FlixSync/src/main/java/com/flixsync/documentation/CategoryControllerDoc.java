@@ -4,13 +4,13 @@ import com.flixsync.config.ExceptionResponse;
 import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.category.CategoryOutputDTO;
+import com.flixsync.model.dto.category.CategoryMoviesListDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.Page;
@@ -62,6 +62,31 @@ public interface CategoryControllerDoc {
     )
     @GetMapping("/{id}")
     ResponseEntity<CategoryOutputDTO> findById(@PathVariable(name = "id") @Positive Integer id) throws EntityNotFoundException;
+
+
+    @Operation(
+            summary = "Find all category's movies list by id",
+            description = "Finds all movies associated with the category's id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns a category and its movies list", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryMoviesListDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Category not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+            }
+    )
+    @GetMapping("/{categoryId}/movies-list")
+    ResponseEntity<CategoryMoviesListDTO> findMoviesById(@PathVariable(name = "categoryId") @Positive Integer categoryId) throws EntityNotFoundException;
 
 
     @Operation(

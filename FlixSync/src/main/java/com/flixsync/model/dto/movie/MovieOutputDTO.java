@@ -40,4 +40,13 @@ public class MovieOutputDTO {
         this.setDuration(durationString);
     }
 
+    @Override public String toString() {
+        return "{id: '" + id +
+                ", name: '" + name + '\'' +
+                ", duration: '" + duration + '\'' +
+                ", releaseDate: '" + releaseDate +
+                ", director: '" + director + '\'' +
+                ", summary: '" + summary + '\'' +
+                '}';
+    }
 }

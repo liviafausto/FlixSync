@@ -49,7 +49,7 @@ public class CategoryService {
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
         CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(category);
-        serviceLog.info("Category's movies list --> " + moviesList.getMovies().toString());
+        serviceLog.info("Category's movies found --> " + moviesList);
 
         serviceLog.end();
         return moviesList;

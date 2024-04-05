@@ -7,6 +7,7 @@ mvnw.cmd
 !**/src/test/**/target/
 src/main/resources/application-local.properties
 db/drop.sql
+db/view.sql
 
 ### STS ###
 .apt_generated

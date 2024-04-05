@@ -61,11 +61,14 @@ public class MovieEntity {
 
     @Override
     public String toString() {
-        return "{id: '" + id + "', " +
-                "name: '" + name + "', " +
-                "duration: '" + MovieDuration.format(duration) + "', " +
-                "releaseDate: '" + releaseDate + "', " +
-                "director: '" + director + "', " +
-                "summary: '" + summary + "'}";
+        return '{' +
+                "id: " + id +
+                ", name: '" + name + '\'' +
+                ", duration: '" + MovieDuration.format(duration) + '\'' +
+                ", releaseDate: " + releaseDate +
+                ", director: '" + director + '\'' +
+                ", summary: '" + summary + '\'' +
+                ", categories: " + categories.toString() +
+                '}';
     }
 }

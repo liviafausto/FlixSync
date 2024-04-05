@@ -22,4 +22,12 @@ public class CategoryOutputDTO {
     public CategoryOutputDTO(CategoryEntity entity){
         BeanUtils.copyProperties(entity, this);
     }
+
+    @Override
+    public String toString() {
+        return '{' +
+                "id: " + id +
+                ", name: '" + name + '\'' +
+                '}';
+    }
 }

@@ -42,11 +42,13 @@ public class MovieInputDTO {
 
     @Override
     public String toString() {
-        return "{name: '" + name + "', " +
-                "hours: '" + hours + "', " +
-                "minutes: '" + minutes + "', " +
-                "releaseDate: '" + releaseDate + "', " +
-                "director: '" + director + "', " +
-                "summary: '" + summary + "'}";
+        return '{' +
+                "name: '" + name + '\'' +
+                ", hours: " + hours +
+                ", minutes: " + minutes +
+                ", releaseDate: " + releaseDate +
+                ", director: '" + director + '\'' +
+                ", summary: '" + summary + '\'' +
+                '}';
     }
 }

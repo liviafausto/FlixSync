@@ -33,9 +33,10 @@ public class CategoryMoviesListDTO {
 
     @Override
     public String toString() {
-        return "{id: '" + id + '\'' +
+        return '{' +
+                "id: " + id +
                 ", name: '" + name + '\'' +
-                ", movies: '" + movies.toString() + '\'' +
+                ", movies: " + movies.toString() +
                 '}';
     }
 }

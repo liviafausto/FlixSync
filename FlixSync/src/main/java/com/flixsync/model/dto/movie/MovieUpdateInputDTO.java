@@ -36,4 +36,16 @@ public class MovieUpdateInputDTO {
 
     @Schema(description = "A brief summary of the movie (no spoilers)")
     private String summary;
+
+    @Override
+    public String toString() {
+        return '{' +
+                "name: '" + name + '\'' +
+                ", hours: " + hours +
+                ", minutes: " + minutes +
+                ", releaseDate: " + releaseDate +
+                ", director: '" + director + '\'' +
+                ", summary: '" + summary + '\'' +
+                '}';
+    }
 }

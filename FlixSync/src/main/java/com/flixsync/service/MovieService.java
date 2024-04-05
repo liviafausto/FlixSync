@@ -129,7 +129,8 @@ public class MovieService {
         serviceLog.end();
     }
 
-    private MovieEntity getMovieById(Integer movieId, ServiceLog serviceLog) throws EntityNotFoundException{
+    protected MovieEntity getMovieById(Integer movieId, ServiceLog serviceLog) throws EntityNotFoundException{
+        serviceLog.setElementName("movie");
         serviceLog.searchRequest(movieId);
         Optional<MovieEntity> movie = movieRepository.findById(movieId);
 

@@ -17,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final MovieService movieService;
 
     public Page<CategoryOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
         ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-ALL", "category");
@@ -77,7 +78,8 @@ public class CategoryService {
         serviceLog.end();
     }
 
-    private CategoryEntity getCategoryById(Integer categoryId, ServiceLog serviceLog) throws EntityNotFoundException {
+    protected CategoryEntity getCategoryById(Integer categoryId, ServiceLog serviceLog) throws EntityNotFoundException {
+        serviceLog.setElementName("category");
         serviceLog.searchRequest(categoryId);
         Optional<CategoryEntity> category = categoryRepository.findById(categoryId);
 

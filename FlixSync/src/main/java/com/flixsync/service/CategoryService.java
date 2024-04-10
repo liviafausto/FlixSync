@@ -1,10 +1,11 @@
 package com.flixsync.service;
 
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.category.CategoryMoviesListDTO;
 import com.flixsync.model.dto.category.CategoryOutputDTO;
-import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.entity.CategoryEntity;
+import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.CategoryRepository;
 import com.flixsync.utils.ServiceLog;
 import lombok.RequiredArgsConstructor;
@@ -90,6 +91,24 @@ public class CategoryService {
         serviceLog.deleteResponse(categoryId);
 
         serviceLog.end();
+    }
+
+    public CategoryMoviesListDTO addMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-ADD-MOVIE", "movie");
+        serviceLog.start("Add a movie to a category");
+
+        CategoryEntity category = getCategoryById(categoryId, serviceLog);
+        MovieEntity updatedMovie = movieService.addCategory(movieId, category, serviceLog);
+
+        serviceLog.info("Adding movie " + updatedMovie.getId() + " to category " + category.getId());
+        category.getMovies().add(updatedMovie);
+        CategoryEntity updatedCategory = categoryRepository.save(category);
+
+        CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(updatedCategory);
+        serviceLog.updateResponse(moviesList.toString());
+
+        serviceLog.end();
+        return moviesList;
     }
 
     protected CategoryEntity getCategoryById(Integer categoryId, ServiceLog serviceLog) throws EntityNotFoundException {

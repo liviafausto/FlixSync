@@ -65,7 +65,7 @@ public interface CategoryControllerDoc {
 
 
     @Operation(
-            summary = "Find all category's movies list by id",
+            summary = "Find all category's movies by id",
             description = "Finds all movies associated with the category's id."
     )
     @ApiResponses(
@@ -85,8 +85,8 @@ public interface CategoryControllerDoc {
                     }),
             }
     )
-    @GetMapping("/{categoryId}/movies-list")
-    ResponseEntity<CategoryMoviesListDTO> findMoviesById(@PathVariable(name = "categoryId") @Positive Integer categoryId) throws EntityNotFoundException;
+    @GetMapping("/movies-list")
+    ResponseEntity<CategoryMoviesListDTO> findMoviesById(@RequestParam(name = "categoryId") @Positive Integer categoryId) throws EntityNotFoundException;
 
 
     @Operation(
@@ -159,5 +159,31 @@ public interface CategoryControllerDoc {
     )
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable(name = "id") @Positive Integer id) throws EntityNotFoundException;
+
+
+    @Operation(
+            summary = "Add a movie to a category",
+            description = "Adds a movie to a category, both specified by id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns the updated category with its movies list"),
+                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Category/Movie not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+            }
+    )
+    @PutMapping("/movies-list")
+    ResponseEntity<CategoryMoviesListDTO> addMovie(@RequestParam(name = "categoryId") @Positive Integer categoryId,
+                                                   @RequestParam(name = "movieId") @Positive Integer movieId)
+            throws EntityNotFoundException, InvalidParameterException;
+
 
 }

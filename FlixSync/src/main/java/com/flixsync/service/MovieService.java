@@ -5,6 +5,7 @@ import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
+import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.utils.MovieDuration;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.MovieRepository;
@@ -127,6 +128,20 @@ public class MovieService {
         serviceLog.deleteResponse(movieId);
 
         serviceLog.end();
+    }
+
+    protected MovieEntity addCategory(Integer movieId, CategoryEntity category, ServiceLog serviceLog) throws EntityNotFoundException, InvalidParameterException {
+        MovieEntity movie = getMovieById(movieId, serviceLog);
+
+        if(movie.getCategories().contains(category)){
+            serviceLog.error("Movie " + movie.getId() + " is already part of category " + category.getId());
+            serviceLog.end();
+            throw new InvalidParameterException("The movie already belongs to this category!");
+        }
+
+        serviceLog.info("Adding category " + category.getId() + " to movie " + movie.getId());
+        movie.getCategories().add(category);
+        return movieRepository.save(movie);
     }
 
     protected MovieEntity getMovieById(Integer movieId, ServiceLog serviceLog) throws EntityNotFoundException{

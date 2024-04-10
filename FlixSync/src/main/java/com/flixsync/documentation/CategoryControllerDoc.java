@@ -162,7 +162,7 @@ public interface CategoryControllerDoc {
 
 
     @Operation(
-            summary = "Add a movie to a category",
+            summary = "Add movie to category",
             description = "Adds a movie to a category, both specified by id."
     )
     @ApiResponses(
@@ -185,5 +185,29 @@ public interface CategoryControllerDoc {
                                                    @RequestParam(name = "movieId") @Positive Integer movieId)
             throws EntityNotFoundException, InvalidParameterException;
 
+
+    @Operation(
+            summary = "Remove movie from category",
+            description = "Removes a movie from a category, both specified by id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns the updated category with its movies list"),
+                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Category/Movie not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+            }
+    )
+    @DeleteMapping("/movies-list")
+    ResponseEntity<CategoryMoviesListDTO> removeMovie(@RequestParam(name = "categoryId") @Positive Integer categoryId,
+                                                      @RequestParam(name = "movieId") @Positive Integer movieId)
+            throws EntityNotFoundException, InvalidParameterException;
 
 }

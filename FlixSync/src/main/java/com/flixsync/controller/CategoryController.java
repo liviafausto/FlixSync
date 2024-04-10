@@ -58,4 +58,9 @@ public class CategoryController implements CategoryControllerDoc {
     public ResponseEntity<CategoryMoviesListDTO> addMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
         return new ResponseEntity<>(categoryService.addMovie(categoryId, movieId), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<CategoryMoviesListDTO> removeMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
+        return new ResponseEntity<>(categoryService.removeMovie(categoryId, movieId), HttpStatus.OK);
+    }
 }

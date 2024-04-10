@@ -94,14 +94,32 @@ public class CategoryService {
     }
 
     public CategoryMoviesListDTO addMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-ADD-MOVIE", "movie");
-        serviceLog.start("Add a movie to a category");
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-ADD-MOVIE", "category");
+        serviceLog.start("Add movie to category");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
         MovieEntity updatedMovie = movieService.addCategory(movieId, category, serviceLog);
 
         serviceLog.info("Adding movie " + updatedMovie.getId() + " to category " + category.getId());
         category.getMovies().add(updatedMovie);
+        CategoryEntity updatedCategory = categoryRepository.save(category);
+
+        CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(updatedCategory);
+        serviceLog.updateResponse(moviesList.toString());
+
+        serviceLog.end();
+        return moviesList;
+    }
+
+    public CategoryMoviesListDTO removeMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
+        ServiceLog serviceLog = new ServiceLog("CATEGORY-REMOVE-MOVIE", "category");
+        serviceLog.start("Remove movie from category");
+
+        CategoryEntity category = getCategoryById(categoryId, serviceLog);
+        MovieEntity updatedMovie = movieService.removeCategory(movieId, category, serviceLog);
+
+        serviceLog.info("Removing movie " + updatedMovie.getId() + " from category " + category.getId());
+        category.getMovies().remove(updatedMovie);
         CategoryEntity updatedCategory = categoryRepository.save(category);
 
         CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(updatedCategory);

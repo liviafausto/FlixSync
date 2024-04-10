@@ -136,11 +136,25 @@ public class MovieService {
         if(movie.getCategories().contains(category)){
             serviceLog.error("Movie " + movie.getId() + " is already part of category " + category.getId());
             serviceLog.end();
-            throw new InvalidParameterException("The movie already belongs to this category!");
+            throw new InvalidParameterException("Movie " + movie.getId() + " already belongs to category " + category.getId() + "!");
         }
 
         serviceLog.info("Adding category " + category.getId() + " to movie " + movie.getId());
         movie.getCategories().add(category);
+        return movieRepository.save(movie);
+    }
+
+    protected MovieEntity removeCategory(Integer movieId, CategoryEntity category, ServiceLog serviceLog) throws EntityNotFoundException, InvalidParameterException {
+        MovieEntity movie = getMovieById(movieId, serviceLog);
+
+        if(!movie.getCategories().contains(category)){
+            serviceLog.error("Movie " + movie.getId() + " is not part of category " + category.getId());
+            serviceLog.end();
+            throw new InvalidParameterException("Movie " + movie.getId() + " doesn't belong to category " + category.getId() + "!");
+        }
+
+        serviceLog.info("Removing category " + category.getId() + " from movie " + movie.getId());
+        movie.getCategories().remove(category);
         return movieRepository.save(movie);
     }
 

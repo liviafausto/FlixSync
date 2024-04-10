@@ -46,7 +46,7 @@ public class CategoryService {
 
     public CategoryMoviesListDTO findMoviesById(Integer categoryId) throws EntityNotFoundException {
         ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-MOVIES-BY-ID", "category");
-        serviceLog.start("Find all category's movies list by id");
+        serviceLog.start("Find all category's movies by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
         CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(category);
@@ -99,6 +99,7 @@ public class CategoryService {
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
         MovieEntity updatedMovie = movieService.addCategory(movieId, category, serviceLog);
+        serviceLog.setElementName("category");
 
         serviceLog.info("Adding movie " + updatedMovie.getId() + " to category " + category.getId());
         category.getMovies().add(updatedMovie);
@@ -117,6 +118,7 @@ public class CategoryService {
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
         MovieEntity updatedMovie = movieService.removeCategory(movieId, category, serviceLog);
+        serviceLog.setElementName("category");
 
         serviceLog.info("Removing movie " + updatedMovie.getId() + " from category " + category.getId());
         category.getMovies().remove(updatedMovie);

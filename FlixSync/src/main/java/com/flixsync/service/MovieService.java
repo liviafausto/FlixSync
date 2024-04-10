@@ -136,7 +136,7 @@ public class MovieService {
         if(movie.getCategories().contains(category)){
             serviceLog.error("Movie " + movie.getId() + " is already part of category " + category.getId());
             serviceLog.end();
-            throw new InvalidParameterException("Movie " + movie.getId() + " already belongs to category " + category.getId() + "!");
+            throw new InvalidParameterException("This movie already belongs to this category!");
         }
 
         serviceLog.info("Adding category " + category.getId() + " to movie " + movie.getId());
@@ -150,7 +150,7 @@ public class MovieService {
         if(!movie.getCategories().contains(category)){
             serviceLog.error("Movie " + movie.getId() + " is not part of category " + category.getId());
             serviceLog.end();
-            throw new InvalidParameterException("Movie " + movie.getId() + " doesn't belong to category " + category.getId() + "!");
+            throw new InvalidParameterException("This movie doesn't belong to this category!");
         }
 
         serviceLog.info("Removing category " + category.getId() + " from movie " + movie.getId());

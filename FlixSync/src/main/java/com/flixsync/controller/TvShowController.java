@@ -1,6 +1,7 @@
 package com.flixsync.controller;
 
 import com.flixsync.documentation.TvShowControllerDoc;
+import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import com.flixsync.service.TvShowService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,10 @@ public class TvShowController implements TvShowControllerDoc {
     @Override
     public ResponseEntity<Page<TvShowOutputDTO>> findAll(Integer page, Integer amount) {
         return new ResponseEntity<>(tvShowService.findAll(page, amount), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<TvShowOutputDTO> findById(Integer id) throws EntityNotFoundException {
+        return new ResponseEntity<>(tvShowService.findById(id), HttpStatus.OK);
     }
 }

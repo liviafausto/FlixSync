@@ -24,6 +24,8 @@ public class MovieDuration {
 
     public static String format(Duration duration){
         if(duration == null) return null;
-        else return getHours(duration) + " hours " + getMinutes(duration) + " minutes";
+        final Long hours = getHours(duration);
+        if(hours == 0L) return getMinutes(duration) + " minutes";
+        else return hours + " hours " + getMinutes(duration) + " minutes";
     }
 }

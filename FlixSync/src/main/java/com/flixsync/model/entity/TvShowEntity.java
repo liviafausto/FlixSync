@@ -1,5 +1,6 @@
 package com.flixsync.model.entity;
 
+import com.flixsync.utils.MovieDuration;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,4 +35,14 @@ public class TvShowEntity {
 
     @Column(name = "seasons")
     private Integer seasons;
+
+    @Override public String toString() {
+        return '{' +
+                "id: " + id +
+                ", title: '" + title + '\'' +
+                ", averageDuration: " + MovieDuration.format(averageDuration) +
+                ", summary: '" + summary + '\'' +
+                ", seasons: " + seasons +
+                '}';
+    }
 }

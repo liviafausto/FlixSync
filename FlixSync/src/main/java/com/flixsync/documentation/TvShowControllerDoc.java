@@ -1,6 +1,7 @@
 package com.flixsync.documentation;
 
 import com.flixsync.config.ExceptionResponse;
+import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 public interface TvShowControllerDoc {
@@ -39,4 +41,32 @@ public interface TvShowControllerDoc {
             @RequestParam(name="page", defaultValue = "0") @PositiveOrZero Integer page,
             @RequestParam(name="amount", defaultValue = "10") @Positive Integer amount
     );
+
+    @Operation(
+            summary = "Find a TV show by id",
+            description = "Finds the TV show associated with a specific id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns the data of a TV show", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = TvShowOutputDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "TV show not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+            }
+    )
+    @GetMapping("/{id}")
+    ResponseEntity<TvShowOutputDTO> findById(
+            @PathVariable(name = "id") @Positive Integer id
+    ) throws EntityNotFoundException;
 }

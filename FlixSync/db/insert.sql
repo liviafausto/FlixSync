@@ -117,3 +117,91 @@ INSERT INTO Movie_Category(id_movie, id_category) VALUES (9, 10);
 INSERT INTO Movie_Category(id_movie, id_category) VALUES (10, 1);
 INSERT INTO Movie_Category(id_movie, id_category) VALUES (10, 6);
 INSERT INTO Movie_Category(id_movie, id_category) VALUES (10, 21);
+
+
+-- TV_SHOW --
+INSERT INTO Tv_Show(title, average_duration, summary)
+VALUES('Evil', '48 minutes',
+       'A skeptical clinical psychologist joins a priest-in-training and a blue collar contractor as they investigate' ||
+       ' supposed abnormal events, including, demonic possession, and other extraordinary occurrences to see if there' ||
+       ' is a scientific explanation or if something truly supernatural is at work.');
+
+
+-- TV_SHOW_CATEGORY --
+INSERT INTO Tv_Show_Category(id_tv_show, id_category) VALUES(1, 6);
+INSERT INTO Tv_Show_Category(id_tv_show, id_category) VALUES(1, 8);
+INSERT INTO Tv_Show_Category(id_tv_show, id_category) VALUES(1, 13);
+
+
+-- EPISODE --
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 1, 'Genesis 1', '44 minutes', '2019-09-26', 'Robert King',
+       'The Catholic Church hires forensic psychologist Kristen Bouchard to determine whether a serial killer is ' ||
+       'possessed by a demon or merely a psychopath.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 2, '177 Minutes', '43 minutes', '2019-10-03 ', 'Ron Underwood',
+       'Kristen, David and Ben investigate a supposed miracle when a teenage girl comes back to life after being' ||
+       ' declared dead for almost three hours; Kristen meets with her former boss and runs into Leland Townsend.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 3, '3 Stars', '41 minutes', '2019-10-10', 'Gloria Muzio',
+       'After a high-strung theater producer''s behavior turns from demanding to what is believed to be demonic,' ||
+       ' Kristen, David and Ben must assess the situation; Kristen discredits Leland Townsend, before he can ruin' ||
+       ' a 17-year-old boy''s life.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 4, 'Rose390', '42 minutes', '2019-10-17', 'Peter Sollett',
+       'The team is hired to evaluate a 9-year-old boy who takes a liking to David, which leaves them hopeful they' ||
+       ' can curb his violent behavior. Kristen worries about her young daughters who lie about a horror game their' ||
+       ' grandmother bought behind her back.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 5, 'October 31', '42 minutes', '2019-10-24', 'Tess Malone',
+       'David and Kristen disagree about an exorcism. Ben tries to debunk TV ghost hunters. The girls play a' ||
+       ' dangerous game with a psychotic schoolmate during a Halloween sleepover.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 6, 'Let x = 9', '43 minutes', '2019-11-07', 'Kevin Rodney Sullivan',
+       'The Catholic Church asks Kristen, David and Ben to assess the veracity of a local prophetess,' ||
+       ' Grace Ling, and they are shaken when they see one of her visions come to life. Also, David struggles' ||
+       ' with jealousy when he sees God speaking with the prophetess, and to Kristen''s dismay, her mother,' ||
+       ' Sheryl, and Leland begin a relationship.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 7, 'Vatican III', '42 minutes', '2019-11-14', 'Jim McKay',
+       'When Bridget confesses to murder during her exorcism, Monsignor Korecki asks Kristen, David and Ben' ||
+       ' to investigate if the details match any open cases and if the woman really is possessed by a demon.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 8, '2 Fathers', '42 minutes', '2019-11-21', 'James Whitmore Jr.',
+       'When David recognizes one of the sigils in the Poveglia Codex from his father Leon''s artwork, he and' ||
+       ' Kristen journey to a remote art commune to investigate its meaning and how it''s related to David''s family.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 9, 'Exorcism Part 2', '42 minutes', '2019-12-05', 'Frederick E.O. Toye',
+       'David is shocked to learn he is being sued for inflicting severe psychological harm on Caroline Hopkins,' ||
+       ' after he assisted in her exorcism. The accusation leads him to question his future as a priest, especially' ||
+       ' once he develops a very close connection with his defense attorney, Renée Harris.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 10, '7 Swans a Singin''', '42 minutes', '2019-12-12', 'John Dahl',
+       'Kristen, David and Ben are called to investigate an insidiously addictive Christmas song that''s spreading' ||
+       ' among an increasing number of students, and the dangerous relationship between online influencers and their' ||
+       ' impressionable young followers.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 11, 'Room 320', '42 minutes', '2020-01-09', 'Peter Sollett',
+       'After David is badly wounded, he is determined to fight off the menacing presence of death from his hospital bed.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 12, 'Justice x 2', '43 minutes', '2020-01-16', 'Rob Hardy',
+       'Leland tries to get serial killer Orson Leroux''s conviction overturned. Kristen is in court when her daughter,' ||
+       ' Laura, needs emergency heart surgery. David is a witness to a woman''s evil nature.');
+
+INSERT INTO Episode(id_tv_show, season, number, name, duration, release_date, director, summary)
+VALUES(1, 1, 13, 'Book 27', '42 minutes', '2020-01-30', 'Michael Zinberg',
+       'David, Kristen and Ben assess whether a pregnant woman is possessed when she claims one of the twins she''s' ||
+       ' carrying is evil. Their investigation leads to a fertility clinic where they discover a connection to all of' ||
+       ' their encounters throughout the season. Also, Kristen questions one of her daughters'' capacity for evil upon' ||
+       ' realizing that she also used that fertility clinic.');

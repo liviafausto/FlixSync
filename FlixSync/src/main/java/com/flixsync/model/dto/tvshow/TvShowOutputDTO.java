@@ -1,10 +1,13 @@
 package com.flixsync.model.dto.tvshow;
 
+import com.flixsync.model.entity.TvShowEntity;
+import com.flixsync.utils.MovieDuration;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
@@ -25,6 +28,12 @@ public class TvShowOutputDTO {
 
     @Schema(description = "The show's total number of seasons", example = "4")
     private Integer seasons;
+
+    public TvShowOutputDTO(TvShowEntity entity){
+        BeanUtils.copyProperties(entity, this);
+        String averageDurationString = MovieDuration.format(entity.getAverageDuration());
+        this.setAverageDuration(averageDurationString);
+    }
 
     @Override
     public String toString() {

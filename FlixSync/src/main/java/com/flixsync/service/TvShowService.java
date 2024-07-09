@@ -1,6 +1,7 @@
 package com.flixsync.service;
 
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.model.dto.tvshow.TvShowInputDTO;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.TvShowRepository;
@@ -34,11 +35,25 @@ public class TvShowService {
 
     public TvShowOutputDTO findById(Integer id) throws EntityNotFoundException {
         ServiceLog serviceLog = new ServiceLog("TV-SHOW-FIND-BY-ID", "TV show");
-        serviceLog.start("Find by id");
+        serviceLog.start("Find a TV show by id");
 
         TvShowEntity tvShow = getTvShowById(id, serviceLog);
         TvShowOutputDTO output = new TvShowOutputDTO(tvShow);
 
+        serviceLog.end();
+        return output;
+    }
+
+    public TvShowOutputDTO save(TvShowInputDTO tvShowInput){
+        ServiceLog serviceLog = new ServiceLog("TV-SHOW-SAVE", "TV show");
+        serviceLog.start("Register a TV show");
+        serviceLog.saveRequest(tvShowInput.toString());
+
+        TvShowEntity tvShow = new TvShowEntity(tvShowInput);
+        TvShowEntity createdTvShow = tvShowRepository.save(tvShow);
+        TvShowOutputDTO output = new TvShowOutputDTO(createdTvShow);
+
+        serviceLog.saveResponse(createdTvShow.toString());
         serviceLog.end();
         return output;
     }

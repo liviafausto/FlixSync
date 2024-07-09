@@ -2,7 +2,7 @@ package com.flixsync.model.dto.tvshow;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class TvShowInputDTO {
     @Schema(description = "The show's title")
     private String title;
 
-    @PositiveOrZero(message = "minutes: must be greater than zero")
+    @Positive(message = "minutes: must be greater than zero")
     @Schema(description = "The average amount of minutes each episode of the show has", example = "48")
     private Long minutesPerEpisode;
 

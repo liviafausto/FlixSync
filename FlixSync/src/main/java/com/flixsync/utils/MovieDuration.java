@@ -25,7 +25,19 @@ public class MovieDuration {
     public static String format(Duration duration){
         if(duration == null) return null;
         final Long hours = getHours(duration);
-        if(hours == 0L) return getMinutes(duration) + " minutes";
-        else return hours + " hours " + getMinutes(duration) + " minutes";
+        final Long minutes = getMinutes(duration);
+        return formatHours(hours) + formatMinutes(minutes);
+    }
+
+    private static String formatHours(Long hours){
+        if(hours == 0L) return "";
+        else if(hours == 1L) return hours + " hour";
+        else return hours + " hours";
+    }
+
+    private static String formatMinutes(Long minutes){
+        if(minutes == 0L) return "";
+        else if(minutes == 1L) return " " + minutes + " minute";
+        else return " " + minutes + " minutes";
     }
 }

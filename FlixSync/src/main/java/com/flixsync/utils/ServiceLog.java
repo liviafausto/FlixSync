@@ -40,7 +40,8 @@ public class ServiceLog {
     }
 
     public void searchResponse(String body){
-        log.info("{} {} found --> {}", SERVICE_NAME, capitalizedElementName(), body);
+        final String capitalizedElementName = StringUtils.firstLetterToUpperCase(elementName);
+        log.info("{} {} found --> {}", SERVICE_NAME, capitalizedElementName, body);
     }
 
     public void saveRequest(String body){
@@ -48,7 +49,8 @@ public class ServiceLog {
     }
 
     public void saveResponse(String body){
-        log.info("{} {} inserted --> {}", SERVICE_NAME, capitalizedElementName(), body);
+        final String capitalizedElementName = StringUtils.firstLetterToUpperCase(elementName);
+        log.info("{} {} inserted --> {}", SERVICE_NAME, capitalizedElementName, body);
     }
 
     public void updateRequest(String attribute, Integer id, String currentValue, String newValue){
@@ -56,7 +58,8 @@ public class ServiceLog {
     }
 
     public void updateResponse(String body){
-        log.info("{} {} updated --> {}", SERVICE_NAME, capitalizedElementName(), body);
+        final String capitalizedElementName = StringUtils.firstLetterToUpperCase(elementName);
+        log.info("{} {} updated --> {}", SERVICE_NAME, capitalizedElementName, body);
     }
 
     public void deleteRequest(String body){
@@ -64,7 +67,8 @@ public class ServiceLog {
     }
 
     public void deleteResponse(Integer id){
-        log.info("{} {} {} was successfully removed from the database", SERVICE_NAME, capitalizedElementName(), id);
+        final String capitalizedElementName = StringUtils.firstLetterToUpperCase(elementName);
+        log.info("{} {} {} was successfully removed from the database", SERVICE_NAME, capitalizedElementName, id);
     }
 
     public void info(String message){
@@ -74,9 +78,4 @@ public class ServiceLog {
     public void error(String message){
         log.error("{} {}", SERVICE_NAME, message);
     }
-
-    private String capitalizedElementName(){
-        return elementName.substring(0,1).toUpperCase() + elementName.substring(1);
-    }
-
 }

@@ -8,6 +8,7 @@ import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.TvShowRepository;
 import com.flixsync.utils.DurationUtils;
 import com.flixsync.utils.ServiceLog;
+import com.flixsync.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -52,7 +53,7 @@ public class TvShowService {
         serviceLog.start("Register a TV show");
         serviceLog.saveRequest(tvShowInput.toString());
 
-        if(!validString(tvShowInput.getTitle())){
+        if(!StringUtils.valid(tvShowInput.getTitle())){
             serviceLog.error("The TV show's title was not provided");
             serviceLog.end();
             throw new InvalidParameterException("title: can't be blank");
@@ -85,7 +86,7 @@ public class TvShowService {
         TvShowEntity tvShow = getTvShowById(tvShowId, serviceLog);
         boolean newDataProvided = false;
 
-        if(validString(NEW_TITLE) && !NEW_TITLE.equals(tvShow.getTitle())){
+        if(StringUtils.valid(NEW_TITLE) && !NEW_TITLE.equals(tvShow.getTitle())){
             serviceLog.updateRequest("title", tvShowId, tvShow.getTitle(), NEW_TITLE);
             tvShow.setTitle(NEW_TITLE);
             newDataProvided = true;
@@ -95,7 +96,7 @@ public class TvShowService {
             tvShow.setAverageDuration(NEW_AVERAGE_DURATION);
             newDataProvided = true;
         }
-        if(validString(NEW_SUMMARY) && !NEW_SUMMARY.equals(tvShow.getSummary())){
+        if(StringUtils.valid(NEW_SUMMARY) && !NEW_SUMMARY.equals(tvShow.getSummary())){
             serviceLog.updateRequest("summary", tvShowId, tvShow.getSummary(), NEW_SUMMARY);
             tvShow.setSummary(NEW_SUMMARY);
             newDataProvided = true;
@@ -132,7 +133,4 @@ public class TvShowService {
         return tvShow;
     }
 
-    private boolean validString(String string){
-        return string != null && !string.isEmpty() && !string.isBlank();
-    }
 }

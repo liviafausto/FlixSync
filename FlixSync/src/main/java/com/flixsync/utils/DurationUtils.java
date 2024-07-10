@@ -2,7 +2,7 @@ package com.flixsync.utils;
 
 import java.time.Duration;
 
-public class MovieDuration {
+public class DurationUtils {
     public static Long getHours(Duration duration){
         if(duration == null) return null;
         else return duration.getSeconds() / 3600;

@@ -6,7 +6,7 @@ import com.flixsync.model.dto.tvshow.TvShowInputDTO;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.TvShowRepository;
-import com.flixsync.utils.MovieDuration;
+import com.flixsync.utils.DurationUtils;
 import com.flixsync.utils.ServiceLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,7 +72,7 @@ public class TvShowService {
         serviceLog.start("Update a TV show by id");
 
         String NEW_TITLE = tvShowInput.getTitle();
-        Duration NEW_AVERAGE_DURATION = MovieDuration.getDuration(null, tvShowInput.getMinutesPerEpisode());
+        Duration NEW_AVERAGE_DURATION = DurationUtils.getDuration(null, tvShowInput.getMinutesPerEpisode());
         String NEW_SUMMARY = tvShowInput.getSummary();
 
         // Data validation phase
@@ -91,7 +91,7 @@ public class TvShowService {
             newDataProvided = true;
         }
         if(NEW_AVERAGE_DURATION != null && !NEW_AVERAGE_DURATION.equals(tvShow.getAverageDuration())){
-            serviceLog.updateRequest("averageDuration", tvShowId, MovieDuration.format(tvShow.getAverageDuration()), MovieDuration.format(NEW_AVERAGE_DURATION));
+            serviceLog.updateRequest("averageDuration", tvShowId, DurationUtils.format(tvShow.getAverageDuration()), DurationUtils.format(NEW_AVERAGE_DURATION));
             tvShow.setAverageDuration(NEW_AVERAGE_DURATION);
             newDataProvided = true;
         }

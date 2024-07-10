@@ -6,7 +6,7 @@ import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
 import com.flixsync.model.entity.CategoryEntity;
-import com.flixsync.utils.MovieDuration;
+import com.flixsync.utils.DurationUtils;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.MovieRepository;
 import com.flixsync.utils.ServiceLog;
@@ -93,9 +93,9 @@ public class MovieService {
             movie = updateName(movie, NEW_NAME);
             movieUpdated = true;
         }
-        if(NEW_HOURS != null && (!NEW_HOURS.equals(MovieDuration.getHours(DURATION)) || !NEW_MINUTES.equals(MovieDuration.getMinutes(DURATION)))){
+        if(NEW_HOURS != null && (!NEW_HOURS.equals(DurationUtils.getHours(DURATION)) || !NEW_MINUTES.equals(DurationUtils.getMinutes(DURATION)))){
             // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
-            movie = updateDuration(movie, MovieDuration.getDuration(NEW_HOURS, NEW_MINUTES));
+            movie = updateDuration(movie, DurationUtils.getDuration(NEW_HOURS, NEW_MINUTES));
             movieUpdated = true;
         }
         if(NEW_RELEASE_DATE != null && !NEW_RELEASE_DATE.equals(movie.getReleaseDate())){
@@ -182,7 +182,7 @@ public class MovieService {
 
     private MovieEntity updateDuration(MovieEntity movie, Duration newDuration){
         ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-DURATION", "movie");
-        serviceLog.updateRequest("duration", movie.getId(), MovieDuration.format(movie.getDuration()), MovieDuration.format(newDuration));
+        serviceLog.updateRequest("duration", movie.getId(), DurationUtils.format(movie.getDuration()), DurationUtils.format(newDuration));
         movie.setDuration(newDuration);
         return movieRepository.save(movie);
     }

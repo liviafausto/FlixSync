@@ -1,7 +1,7 @@
 package com.flixsync.model.dto.tvshow;
 
 import com.flixsync.model.entity.TvShowEntity;
-import com.flixsync.utils.MovieDuration;
+import com.flixsync.utils.DurationUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class TvShowOutputDTO {
 
     public TvShowOutputDTO(TvShowEntity entity){
         BeanUtils.copyProperties(entity, this);
-        String averageDurationString = MovieDuration.format(entity.getAverageDuration());
+        String averageDurationString = DurationUtils.format(entity.getAverageDuration());
         this.setAverageDuration(averageDurationString);
     }
 

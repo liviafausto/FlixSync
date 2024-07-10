@@ -1,7 +1,7 @@
 package com.flixsync.model.entity;
 
 import com.flixsync.model.dto.tvshow.TvShowInputDTO;
-import com.flixsync.utils.MovieDuration;
+import com.flixsync.utils.DurationUtils;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,7 +40,7 @@ public class TvShowEntity {
 
     public TvShowEntity(TvShowInputDTO input){
         BeanUtils.copyProperties(input, this);
-        Duration averageDuration = MovieDuration.getDuration(null, input.getMinutesPerEpisode());
+        Duration averageDuration = DurationUtils.getDuration(null, input.getMinutesPerEpisode());
         this.setAverageDuration(averageDuration);
         this.setSeasons(0);
     }
@@ -50,7 +50,7 @@ public class TvShowEntity {
         return '{' +
                 "id: " + id +
                 ", title: '" + title + '\'' +
-                ", averageDuration: '" + MovieDuration.format(averageDuration) + '\'' +
+                ", averageDuration: '" + DurationUtils.format(averageDuration) + '\'' +
                 ", summary: '" + summary + '\'' +
                 ", seasons: " + seasons +
                 '}';

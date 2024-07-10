@@ -105,7 +105,7 @@ public class TvShowService {
         if(!newDataProvided){
             serviceLog.error("No new data was provided, so nothing will be updated");
             serviceLog.end();
-            throw new InvalidParameterException("The TV show already has the provided data");
+            throw new InvalidParameterException("No new data was provided");
         }
 
         // Updating data

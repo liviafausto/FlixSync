@@ -10,6 +10,7 @@ import com.flixsync.utils.DurationUtils;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.MovieRepository;
 import com.flixsync.utils.ServiceLog;
+import com.flixsync.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,56 +67,60 @@ public class MovieService {
         serviceLog.start("Update a movie by id");
 
         final String NEW_NAME = movieUpdateInput.getName();
-        final Long NEW_HOURS = movieUpdateInput.getHours();
-        final Long NEW_MINUTES = movieUpdateInput.getMinutes();
+        final Duration NEW_DURATION = DurationUtils.getDuration(movieUpdateInput.getHours(), movieUpdateInput.getMinutes());
         final LocalDate NEW_RELEASE_DATE = movieUpdateInput.getReleaseDate();
         final String NEW_DIRECTOR = movieUpdateInput.getDirector();
         final String NEW_SUMMARY = movieUpdateInput.getSummary();
 
         // Data validation phase
-        if(NEW_NAME == null && NEW_HOURS == null && NEW_MINUTES == null && NEW_RELEASE_DATE == null && NEW_DIRECTOR == null && NEW_SUMMARY == null){
+        if(NEW_NAME == null && NEW_DURATION == null && NEW_RELEASE_DATE == null && NEW_DIRECTOR == null && NEW_SUMMARY == null){
             serviceLog.error("No parameters were provided");
             serviceLog.end();
-            throw new InvalidParameterException("At least one parameter has to be provided!");
+            throw new InvalidParameterException("At least one parameter has to be provided");
         }
-        if(NEW_HOURS != null && NEW_MINUTES == null || NEW_HOURS == null && NEW_MINUTES != null){
-            serviceLog.error("Movie's duration wasn't correctly informed");
+
+        MovieEntity movie = getMovieById(movieId, serviceLog);
+        boolean newDataProvided = false;
+
+        if(StringUtils.valid(NEW_NAME) && !NEW_NAME.equals(movie.getName())){
+            serviceLog.updateRequest("name", movie.getId(), movie.getName(), NEW_NAME);
+            movie.setName(NEW_NAME);
+            newDataProvided = true;
+        }
+        if(NEW_DURATION != null && !NEW_DURATION.equals(movie.getDuration())){
+            serviceLog.updateRequest("duration", movie.getId(), DurationUtils.format(movie.getDuration()), DurationUtils.format(NEW_DURATION));
+            movie.setDuration(NEW_DURATION);
+            newDataProvided = true;
+        }
+        if(NEW_RELEASE_DATE != null && !NEW_RELEASE_DATE.equals(movie.getReleaseDate())){
+            serviceLog.updateRequest("release date", movie.getId(), movie.getReleaseDate().toString(), NEW_RELEASE_DATE.toString());
+            movie.setReleaseDate(NEW_RELEASE_DATE);
+            newDataProvided = true;
+        }
+        if(StringUtils.valid(NEW_DIRECTOR) && !NEW_DIRECTOR.equals(movie.getDirector())){
+            serviceLog.updateRequest("director", movie.getId(), movie.getDirector(), NEW_DIRECTOR);
+            movie.setDirector(NEW_DIRECTOR);
+            newDataProvided = true;
+        }
+        if(StringUtils.valid(NEW_SUMMARY) && !NEW_SUMMARY.equals(movie.getSummary())){
+            serviceLog.updateRequest("summary", movie.getId(), movie.getSummary(), NEW_SUMMARY);
+            movie.setSummary(NEW_SUMMARY);
+            newDataProvided = true;
+        }
+
+        if(!newDataProvided){
+            serviceLog.error("No new data was provided, so nothing will be updated");
             serviceLog.end();
-            throw new InvalidParameterException("Both hours and minutes must be specified to update the movie's duration");
+            throw new InvalidParameterException("No new data was provided");
         }
 
         // Updating data
-        MovieEntity movie = getMovieById(movieId, serviceLog);
-        final Duration DURATION = movie.getDuration();
-        boolean movieUpdated = false;
+        MovieEntity updatedMovie = movieRepository.save(movie);
+        MovieOutputDTO output = new MovieOutputDTO(updatedMovie);
 
-        if(NEW_NAME != null && !NEW_NAME.equals(movie.getName())){
-            movie = updateName(movie, NEW_NAME);
-            movieUpdated = true;
-        }
-        if(NEW_HOURS != null && (!NEW_HOURS.equals(DurationUtils.getHours(DURATION)) || !NEW_MINUTES.equals(DurationUtils.getMinutes(DURATION)))){
-            // If 'hours' is present, then 'minutes' is also present (validated on the previous phase)
-            movie = updateDuration(movie, DurationUtils.getDuration(NEW_HOURS, NEW_MINUTES));
-            movieUpdated = true;
-        }
-        if(NEW_RELEASE_DATE != null && !NEW_RELEASE_DATE.equals(movie.getReleaseDate())){
-            movie = updateReleaseDate(movie, NEW_RELEASE_DATE);
-            movieUpdated = true;
-        }
-        if(NEW_DIRECTOR != null && !NEW_DIRECTOR.equals(movie.getDirector())){
-            movie = updateDirector(movie, NEW_DIRECTOR);
-            movieUpdated = true;
-        }
-        if(NEW_SUMMARY != null && !NEW_SUMMARY.equals(movie.getSummary())){
-            movie = updateSummary(movie, NEW_SUMMARY);
-            movieUpdated = true;
-        }
-
-        if(movieUpdated) serviceLog.updateResponse(movie.toString());
-        else serviceLog.error("No new data was provided, so nothing was updated");
-
+        serviceLog.updateResponse(movie.toString());
         serviceLog.end();
-        return new MovieOutputDTO(movie);
+        return output;
     }
 
     public void delete(Integer movieId) throws EntityNotFoundException{
@@ -171,41 +176,6 @@ public class MovieService {
 
         serviceLog.searchResponse(movie.get().toString());
         return movie.get();
-    }
-
-    private MovieEntity updateName(MovieEntity movie, String newName){
-        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-NAME", "movie");
-        serviceLog.updateRequest("name", movie.getId(), movie.getName(), newName);
-        movie.setName(newName);
-        return movieRepository.save(movie);
-    }
-
-    private MovieEntity updateDuration(MovieEntity movie, Duration newDuration){
-        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-DURATION", "movie");
-        serviceLog.updateRequest("duration", movie.getId(), DurationUtils.format(movie.getDuration()), DurationUtils.format(newDuration));
-        movie.setDuration(newDuration);
-        return movieRepository.save(movie);
-    }
-
-    private MovieEntity updateReleaseDate(MovieEntity movie, LocalDate newReleaseDate){
-        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-RELEASE-DATE", "movie");
-        serviceLog.updateRequest("release date", movie.getId(), movie.getReleaseDate().toString(), newReleaseDate.toString());
-        movie.setReleaseDate(newReleaseDate);
-        return movieRepository.save(movie);
-    }
-
-    private MovieEntity updateDirector(MovieEntity movie, String newDirector){
-        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-DIRECTOR", "movie");
-        serviceLog.updateRequest("director", movie.getId(), movie.getDirector(), newDirector);
-        movie.setDirector(newDirector);
-        return movieRepository.save(movie);
-    }
-
-    private MovieEntity updateSummary(MovieEntity movie, String newSummary){
-        ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE-SUMMARY", "movie");
-        serviceLog.updateRequest("summary", movie.getId(), movie.getSummary(), newSummary);
-        movie.setSummary(newSummary);
-        return movieRepository.save(movie);
     }
 
 }

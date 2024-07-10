@@ -28,13 +28,15 @@ public class MovieService {
     public Page<MovieOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
         ServiceLog serviceLog = new ServiceLog("MOVIE-FIND-ALL", "movie");
         serviceLog.start("Find all movies");
-
         serviceLog.pageRequest(pageNumber, amountPerPage);
-        Page<MovieEntity> movies = movieRepository.findAll(PageRequest.of(pageNumber, amountPerPage, Sort.by("id")));
-        serviceLog.pageResponse(movies.getNumberOfElements());
 
+        PageRequest pageRequest = PageRequest.of(pageNumber, amountPerPage, Sort.by("id"));
+        Page<MovieEntity> movies = movieRepository.findAll(pageRequest);
+        Page<MovieOutputDTO> moviesOutput = movies.map(MovieOutputDTO::new);
+
+        serviceLog.pageResponse(movies.getNumberOfElements());
         serviceLog.end();
-        return movies.map(MovieOutputDTO::new);
+        return moviesOutput;
     }
 
     public MovieOutputDTO findById(Integer movieId) throws EntityNotFoundException{
@@ -42,14 +44,16 @@ public class MovieService {
         serviceLog.start("Find a movie by id");
 
         MovieEntity movie = getMovieById(movieId, serviceLog);
+        MovieOutputDTO movieOutput = new MovieOutputDTO(movie);
 
         serviceLog.end();
-        return new MovieOutputDTO(movie);
+        return movieOutput;
     }
 
     public MovieOutputDTO save(MovieInputDTO movieInput) throws InvalidParameterException {
         ServiceLog serviceLog = new ServiceLog("MOVIE-SAVE", "movie");
         serviceLog.start("Register a movie");
+        serviceLog.saveRequest(movieInput.toString());
 
         if(!StringUtils.valid(movieInput.getName())){
             serviceLog.error("The movie's name was not provided");
@@ -62,17 +66,16 @@ public class MovieService {
             throw new InvalidParameterException("director: can't be blank");
         }
 
-        serviceLog.saveRequest(movieInput.toString());
         MovieEntity movie = new MovieEntity(movieInput);
         MovieEntity createdMovie = movieRepository.save(movie);
-        serviceLog.saveResponse(createdMovie.toString());
+        MovieOutputDTO createdMovieOutput = new MovieOutputDTO(createdMovie);
 
+        serviceLog.saveResponse(createdMovie.toString());
         serviceLog.end();
-        return new MovieOutputDTO(createdMovie);
+        return createdMovieOutput;
     }
 
-    public MovieOutputDTO update(Integer movieId, MovieInputDTO movieInput)
-            throws EntityNotFoundException, InvalidParameterException {
+    public MovieOutputDTO update(Integer movieId, MovieInputDTO movieInput) throws EntityNotFoundException, InvalidParameterException {
         ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE", "movie");
         serviceLog.start("Update a movie by id");
 
@@ -126,11 +129,11 @@ public class MovieService {
 
         // Updating data
         MovieEntity updatedMovie = movieRepository.save(movie);
-        MovieOutputDTO output = new MovieOutputDTO(updatedMovie);
+        MovieOutputDTO updatedMovieOutput = new MovieOutputDTO(updatedMovie);
 
         serviceLog.updateResponse(movie.toString());
         serviceLog.end();
-        return output;
+        return updatedMovieOutput;
     }
 
     public void delete(Integer movieId) throws EntityNotFoundException{

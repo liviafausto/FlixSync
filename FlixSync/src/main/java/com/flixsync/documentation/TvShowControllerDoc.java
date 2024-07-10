@@ -124,4 +124,30 @@ public interface TvShowControllerDoc {
             @PathVariable(name = "id") @Positive Integer id,
             @RequestBody @Valid TvShowInputDTO tvShowInput
     ) throws EntityNotFoundException, InvalidParameterException;
+
+    @Operation(
+            summary = "Remove a TV show by id",
+            description = "Removes the TV show associated with a specified id from the database."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "The TV show was successfully removed from the database"),
+                    @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "TV show not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+            }
+    )
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> delete(
+            @PathVariable(name = "id") @Positive Integer id
+    ) throws EntityNotFoundException;
 }

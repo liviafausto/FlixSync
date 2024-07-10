@@ -30,11 +30,11 @@ public class TvShowService {
 
         PageRequest pageRequest = PageRequest.of(pageNumber, amountPerPage, Sort.by("id"));
         Page<TvShowEntity> tvShows = tvShowRepository.findAll(pageRequest);
-        Page<TvShowOutputDTO> output = tvShows.map(TvShowOutputDTO::new);
+        Page<TvShowOutputDTO> tvShowsOutput = tvShows.map(TvShowOutputDTO::new);
 
         serviceLog.pageResponse(tvShows.getNumberOfElements());
         serviceLog.end();
-        return output;
+        return tvShowsOutput;
     }
 
     public TvShowOutputDTO findById(Integer id) throws EntityNotFoundException {
@@ -42,10 +42,10 @@ public class TvShowService {
         serviceLog.start("Find a TV show by id");
 
         TvShowEntity tvShow = getTvShowById(id, serviceLog);
-        TvShowOutputDTO output = new TvShowOutputDTO(tvShow);
+        TvShowOutputDTO tvShowOutput = new TvShowOutputDTO(tvShow);
 
         serviceLog.end();
-        return output;
+        return tvShowOutput;
     }
 
     public TvShowOutputDTO save(TvShowInputDTO tvShowInput) throws InvalidParameterException {
@@ -61,11 +61,11 @@ public class TvShowService {
 
         TvShowEntity tvShow = new TvShowEntity(tvShowInput);
         TvShowEntity createdTvShow = tvShowRepository.save(tvShow);
-        TvShowOutputDTO output = new TvShowOutputDTO(createdTvShow);
+        TvShowOutputDTO createdTvShowOutput = new TvShowOutputDTO(createdTvShow);
 
         serviceLog.saveResponse(createdTvShow.toString());
         serviceLog.end();
-        return output;
+        return createdTvShowOutput;
     }
 
     public TvShowOutputDTO update(Integer tvShowId, TvShowInputDTO tvShowInput) throws InvalidParameterException, EntityNotFoundException {
@@ -110,11 +110,23 @@ public class TvShowService {
 
         // Updating data
         TvShowEntity updatedTvShow = tvShowRepository.save(tvShow);
-        TvShowOutputDTO output = new TvShowOutputDTO(updatedTvShow);
+        TvShowOutputDTO updatedTvShowOutput = new TvShowOutputDTO(updatedTvShow);
 
         serviceLog.updateResponse(updatedTvShow.toString());
         serviceLog.end();
-        return output;
+        return updatedTvShowOutput;
+    }
+
+    public void delete(Integer tvShowId) throws EntityNotFoundException {
+        ServiceLog serviceLog = new ServiceLog("TV-SHOW-DELETE", "TV show");
+        serviceLog.start("Delete a TV show by id");
+
+        TvShowEntity tvShow = getTvShowById(tvShowId, serviceLog);
+        serviceLog.deleteRequest(tvShow.toString());
+        tvShowRepository.delete(tvShow);
+        serviceLog.deleteResponse(tvShowId);
+
+        serviceLog.end();
     }
 
     protected TvShowEntity getTvShowById(Integer tvShowId, ServiceLog serviceLog) throws EntityNotFoundException {

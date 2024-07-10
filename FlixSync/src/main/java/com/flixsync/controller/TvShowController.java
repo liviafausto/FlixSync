@@ -40,4 +40,11 @@ public class TvShowController implements TvShowControllerDoc {
     public ResponseEntity<TvShowOutputDTO> update(Integer id, TvShowInputDTO tvShowInput) throws EntityNotFoundException, InvalidParameterException {
         return new ResponseEntity<>(tvShowService.update(id, tvShowInput), HttpStatus.OK);
     }
+
+    @Override public ResponseEntity<Void> delete(Integer id) throws EntityNotFoundException {
+        tvShowService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

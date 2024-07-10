@@ -2,6 +2,7 @@ package com.flixsync.controller;
 
 import com.flixsync.documentation.TvShowControllerDoc;
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.tvshow.TvShowInputDTO;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import com.flixsync.service.TvShowService;
@@ -31,7 +32,12 @@ public class TvShowController implements TvShowControllerDoc {
     }
 
     @Override
-    public ResponseEntity<TvShowOutputDTO> save(TvShowInputDTO tvShowInput) {
+    public ResponseEntity<TvShowOutputDTO> save(TvShowInputDTO tvShowInput) throws InvalidParameterException {
         return new ResponseEntity<>(tvShowService.save(tvShowInput), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<TvShowOutputDTO> update(Integer id, TvShowInputDTO tvShowInput) throws EntityNotFoundException, InvalidParameterException {
+        return new ResponseEntity<>(tvShowService.update(id, tvShowInput), HttpStatus.OK);
     }
 }

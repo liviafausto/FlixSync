@@ -1,7 +1,6 @@
 package com.flixsync.model.dto.tvshow;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TvShowInputDTO {
-    @NotBlank(message = "title: can't be blank")
     @Size(max = 255, message = "title: too many characters")
     @Schema(description = "The show's title")
     private String title;

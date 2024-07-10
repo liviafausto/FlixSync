@@ -2,6 +2,7 @@ package com.flixsync.documentation;
 
 import com.flixsync.config.ExceptionResponse;
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.tvshow.TvShowInputDTO;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,5 +92,36 @@ public interface TvShowControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<TvShowOutputDTO> save(@RequestBody @Valid TvShowInputDTO tvShowInput);
+    ResponseEntity<TvShowOutputDTO> save(
+            @RequestBody @Valid TvShowInputDTO tvShowInput
+    ) throws InvalidParameterException;
+
+    @Operation(
+            summary = "Update a TV show by id",
+            description = "Updates any part of the data of a specified TV show, except its own id or the number of seasons."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns the data of the updated TV show", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = TvShowOutputDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "TV show not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+            }
+    )
+    @PutMapping("/{id}")
+    ResponseEntity<TvShowOutputDTO> update(
+            @PathVariable(name = "id") @Positive Integer id,
+            @RequestBody @Valid TvShowInputDTO tvShowInput
+    ) throws EntityNotFoundException, InvalidParameterException;
 }

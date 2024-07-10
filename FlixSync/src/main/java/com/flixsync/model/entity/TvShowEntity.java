@@ -50,7 +50,7 @@ public class TvShowEntity {
         return '{' +
                 "id: " + id +
                 ", title: '" + title + '\'' +
-                ", averageDuration: " + MovieDuration.format(averageDuration) +
+                ", averageDuration: '" + MovieDuration.format(averageDuration) + '\'' +
                 ", summary: '" + summary + '\'' +
                 ", seasons: " + seasons +
                 '}';

@@ -5,7 +5,6 @@ import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
-import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
 import com.flixsync.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,14 +31,14 @@ public class MovieController implements MovieControllerDoc {
     }
 
     @Override
-    public ResponseEntity<MovieOutputDTO> save(MovieInputDTO movieInput){
+    public ResponseEntity<MovieOutputDTO> save(MovieInputDTO movieInput) throws InvalidParameterException {
         return new ResponseEntity<>(movieService.save(movieInput), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<MovieOutputDTO> update(Integer id, MovieUpdateInputDTO movieUpdateInput)
+    public ResponseEntity<MovieOutputDTO> update(Integer id, MovieInputDTO movieInput)
             throws EntityNotFoundException, InvalidParameterException {
-        return new ResponseEntity<>(movieService.update(id, movieUpdateInput), HttpStatus.OK);
+        return new ResponseEntity<>(movieService.update(id, movieInput), HttpStatus.OK);
     }
 
     @Override

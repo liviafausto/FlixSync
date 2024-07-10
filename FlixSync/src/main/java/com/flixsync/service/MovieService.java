@@ -4,7 +4,6 @@ import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.movie.MovieInputDTO;
 import com.flixsync.model.dto.movie.MovieOutputDTO;
-import com.flixsync.model.dto.movie.MovieUpdateInputDTO;
 import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.utils.DurationUtils;
 import com.flixsync.model.entity.MovieEntity;
@@ -48,9 +47,20 @@ public class MovieService {
         return new MovieOutputDTO(movie);
     }
 
-    public MovieOutputDTO save(MovieInputDTO movieInput){
+    public MovieOutputDTO save(MovieInputDTO movieInput) throws InvalidParameterException {
         ServiceLog serviceLog = new ServiceLog("MOVIE-SAVE", "movie");
         serviceLog.start("Register a movie");
+
+        if(!StringUtils.valid(movieInput.getName())){
+            serviceLog.error("The movie's name was not provided");
+            serviceLog.end();
+            throw new InvalidParameterException("name: can't be blank");
+        }
+        if(!StringUtils.valid(movieInput.getDirector())){
+            serviceLog.error("The movie's director was not provided");
+            serviceLog.end();
+            throw new InvalidParameterException("director: can't be blank");
+        }
 
         serviceLog.saveRequest(movieInput.toString());
         MovieEntity movie = new MovieEntity(movieInput);
@@ -61,16 +71,16 @@ public class MovieService {
         return new MovieOutputDTO(createdMovie);
     }
 
-    public MovieOutputDTO update(Integer movieId, MovieUpdateInputDTO movieUpdateInput)
+    public MovieOutputDTO update(Integer movieId, MovieInputDTO movieInput)
             throws EntityNotFoundException, InvalidParameterException {
         ServiceLog serviceLog = new ServiceLog("MOVIE-UPDATE", "movie");
         serviceLog.start("Update a movie by id");
 
-        final String NEW_NAME = movieUpdateInput.getName();
-        final Duration NEW_DURATION = DurationUtils.getDuration(movieUpdateInput.getHours(), movieUpdateInput.getMinutes());
-        final LocalDate NEW_RELEASE_DATE = movieUpdateInput.getReleaseDate();
-        final String NEW_DIRECTOR = movieUpdateInput.getDirector();
-        final String NEW_SUMMARY = movieUpdateInput.getSummary();
+        final String NEW_NAME = movieInput.getName();
+        final Duration NEW_DURATION = DurationUtils.getDuration(movieInput.getHours(), movieInput.getMinutes());
+        final LocalDate NEW_RELEASE_DATE = movieInput.getReleaseDate();
+        final String NEW_DIRECTOR = movieInput.getDirector();
+        final String NEW_SUMMARY = movieInput.getSummary();
 
         // Data validation phase
         if(NEW_NAME == null && NEW_DURATION == null && NEW_RELEASE_DATE == null && NEW_DIRECTOR == null && NEW_SUMMARY == null){

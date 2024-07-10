@@ -1,7 +1,6 @@
 package com.flixsync.model.dto.movie;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieInputDTO {
-    @NotBlank(message = "name: can't be blank")
     @Size(max = 255, message = "name: too many characters")
     @Schema(description = "The movie's name")
     private String name;
@@ -32,7 +30,6 @@ public class MovieInputDTO {
     @Schema(description = "The movie's release date, formatted as 'YYYY-MM-DD'", example = "2010-09-24")
     private LocalDate releaseDate;
 
-    @NotBlank(message = "director: can't be blank")
     @Size(max = 100, message = "director: too many characters")
     @Schema(description = "The movie's main director")
     private String director;

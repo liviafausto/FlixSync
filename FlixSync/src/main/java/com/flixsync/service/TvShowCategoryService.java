@@ -39,7 +39,7 @@ public class TvShowCategoryService {
         CategoryEntity category = categoryService.getCategoryById(categoryId, serviceLog);
         TvShowEntity tvShow = tvShowService.getTvShowById(tvShowId, serviceLog);
 
-        if(tvShow.getTvShowCategories().contains(category)){
+        if(tvShow.getCategories().contains(category)){
             final String errorMessage = "TV show '" + tvShow.getTitle() + "' is already part of category '" + category.getName() + "'";
             serviceLog.error(errorMessage);
             serviceLog.end();
@@ -60,7 +60,7 @@ public class TvShowCategoryService {
         CategoryEntity category = categoryService.getCategoryById(categoryId, serviceLog);
         TvShowEntity tvShow = tvShowService.getTvShowById(tvShowId, serviceLog);
 
-        if(!tvShow.getTvShowCategories().contains(category)){
+        if(!tvShow.getCategories().contains(category)){
             final String errorMessage = "TV show '" + tvShow.getTitle() + "' is not part of category '" + category.getName() + "'";
             serviceLog.error(errorMessage);
             serviceLog.end();

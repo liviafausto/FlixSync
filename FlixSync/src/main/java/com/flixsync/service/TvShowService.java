@@ -150,7 +150,7 @@ public class TvShowService {
         serviceLog.setElementName("TV show");
         serviceLog.info("Adding category '" + category.getName() + "' to TV show '" + tvShow.getTitle() + "'");
 
-        tvShow.getTvShowCategories().add(category);
+        tvShow.getCategories().add(category);
         TvShowEntity updatedTvShow = tvShowRepository.save(tvShow);
 
         serviceLog.updateResponse(updatedTvShow.toString());
@@ -161,7 +161,7 @@ public class TvShowService {
         serviceLog.setElementName("TV show");
         serviceLog.info("Removing category '" + category.getName() + "' from TV show '" + tvShow.getTitle() + "'");
 
-        tvShow.getTvShowCategories().remove(category);
+        tvShow.getCategories().remove(category);
         TvShowEntity updatedTvShow = tvShowRepository.save(tvShow);
 
         serviceLog.updateResponse(updatedTvShow.toString());

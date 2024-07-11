@@ -42,7 +42,7 @@ public class TvShowEntity {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "tvShows")
-    private Set<CategoryEntity> tvShowCategories;
+    private Set<CategoryEntity> categories;
 
     public TvShowEntity(TvShowInputDTO input){
         BeanUtils.copyProperties(input, this);
@@ -59,7 +59,7 @@ public class TvShowEntity {
                 ", averageDuration: '" + DurationUtils.format(averageDuration) + '\'' +
                 ", summary: '" + summary + '\'' +
                 ", seasons: " + seasons +
-                ", categories: " + tvShowCategories.toString() +
+                ", categories: " + categories.toString() +
                 '}';
     }
 }

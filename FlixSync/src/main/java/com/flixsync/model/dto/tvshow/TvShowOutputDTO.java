@@ -39,7 +39,7 @@ public class TvShowOutputDTO {
         BeanUtils.copyProperties(entity, this);
         String averageDurationString = DurationUtils.format(entity.getAverageDuration());
         this.setAverageDuration(averageDurationString);
-        List<CategoryOutputDTO> categoriesOutput = entity.getTvShowCategories().stream().map(CategoryOutputDTO::new).toList();
+        List<CategoryOutputDTO> categoriesOutput = entity.getCategories().stream().map(CategoryOutputDTO::new).toList();
         this.setCategories(categoriesOutput);
     }
 

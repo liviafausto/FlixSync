@@ -1,5 +1,6 @@
 package com.flixsync.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flixsync.model.dto.tvshow.TvShowInputDTO;
 import com.flixsync.utils.DurationUtils;
 import io.hypersistence.utils.hibernate.type.interval.PostgreSQLIntervalType;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.beans.BeanUtils;
 
 import java.time.Duration;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -38,6 +40,10 @@ public class TvShowEntity {
     @Column(name = "seasons")
     private Integer seasons;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "tvShows")
+    private Set<CategoryEntity> tvShowCategories;
+
     public TvShowEntity(TvShowInputDTO input){
         BeanUtils.copyProperties(input, this);
         Duration averageDuration = DurationUtils.getDuration(null, input.getMinutesPerEpisode());
@@ -53,6 +59,7 @@ public class TvShowEntity {
                 ", averageDuration: '" + DurationUtils.format(averageDuration) + '\'' +
                 ", summary: '" + summary + '\'' +
                 ", seasons: " + seasons +
+                ", categories: " + tvShowCategories.toString() +
                 '}';
     }
 }

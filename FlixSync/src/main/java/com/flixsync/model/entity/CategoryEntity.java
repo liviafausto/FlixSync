@@ -28,6 +28,15 @@ public class CategoryEntity {
     @ManyToMany(mappedBy = "movieCategories")
     private Set<MovieEntity> movies;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "Tv_Show_Category",
+            joinColumns = @JoinColumn(name = "id_category"),
+            inverseJoinColumns = @JoinColumn(name = "id_tv_show")
+    )
+    private Set<TvShowEntity> tvShows;
+
     public CategoryEntity(String name){
         this.name = name;
     }

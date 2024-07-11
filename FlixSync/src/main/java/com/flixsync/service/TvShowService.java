@@ -4,6 +4,7 @@ import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.tvshow.TvShowInputDTO;
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
+import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.TvShowRepository;
 import com.flixsync.utils.DurationUtils;
@@ -145,4 +146,25 @@ public class TvShowService {
         return tvShow;
     }
 
+    protected TvShowEntity addCategory(TvShowEntity tvShow, CategoryEntity category, ServiceLog serviceLog) {
+        serviceLog.setElementName("TV show");
+        serviceLog.info("Adding category '" + category.getName() + "' to TV show '" + tvShow.getTitle() + "'");
+
+        tvShow.getTvShowCategories().add(category);
+        TvShowEntity updatedTvShow = tvShowRepository.save(tvShow);
+
+        serviceLog.updateResponse(updatedTvShow.toString());
+        return updatedTvShow;
+    }
+
+    protected TvShowEntity removeCategory(TvShowEntity tvShow, CategoryEntity category, ServiceLog serviceLog) {
+        serviceLog.setElementName("TV show");
+        serviceLog.info("Removing category '" + category.getName() + "' from TV show '" + tvShow.getTitle() + "'");
+
+        tvShow.getTvShowCategories().remove(category);
+        TvShowEntity updatedTvShow = tvShowRepository.save(tvShow);
+
+        serviceLog.updateResponse(updatedTvShow.toString());
+        return updatedTvShow;
+    }
 }

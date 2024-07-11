@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.View;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MovieService {
     private final MovieRepository movieRepository;
+    private final View error;
 
     public Page<MovieOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
         ServiceLog serviceLog = new ServiceLog("MOVIE-FIND-ALL", "movie");
@@ -151,28 +153,30 @@ public class MovieService {
     protected MovieEntity addCategory(Integer movieId, CategoryEntity category, ServiceLog serviceLog) throws EntityNotFoundException, InvalidParameterException {
         MovieEntity movie = getMovieById(movieId, serviceLog);
 
-        if(movie.getCategories().contains(category)){
-            serviceLog.error("Movie " + movie.getId() + " is already part of category " + category.getId());
+        if(movie.getMovieCategories().contains(category)){
+            final String errorMessage = "Movie '" + movie.getName() + "' is already part of category '" + category.getName() + "'";
+            serviceLog.error(errorMessage);
             serviceLog.end();
-            throw new InvalidParameterException("This movie already belongs to this category!");
+            throw new InvalidParameterException(errorMessage);
         }
 
         serviceLog.info("Adding category " + category.getId() + " to movie " + movie.getId());
-        movie.getCategories().add(category);
+        movie.getMovieCategories().add(category);
         return movieRepository.save(movie);
     }
 
     protected MovieEntity removeCategory(Integer movieId, CategoryEntity category, ServiceLog serviceLog) throws EntityNotFoundException, InvalidParameterException {
         MovieEntity movie = getMovieById(movieId, serviceLog);
 
-        if(!movie.getCategories().contains(category)){
-            serviceLog.error("Movie " + movie.getId() + " is not part of category " + category.getId());
+        if(!movie.getMovieCategories().contains(category)){
+            final String errorMessage = "Movie '" + movie.getName() + "' is not part of category '" + category.getName() + "'";
+            serviceLog.error(errorMessage);
             serviceLog.end();
-            throw new InvalidParameterException("This movie doesn't belong to this category!");
+            throw new InvalidParameterException(errorMessage);
         }
 
         serviceLog.info("Removing category " + category.getId() + " from movie " + movie.getId());
-        movie.getCategories().remove(category);
+        movie.getMovieCategories().remove(category);
         return movieRepository.save(movie);
     }
 

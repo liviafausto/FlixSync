@@ -51,7 +51,7 @@ public class MovieEntity {
             joinColumns = @JoinColumn(name = "id_movie"),
             inverseJoinColumns = @JoinColumn(name = "id_category")
     )
-    private Set<CategoryEntity> categories;
+    private Set<CategoryEntity> movieCategories;
 
     public MovieEntity(MovieInputDTO input){
         BeanUtils.copyProperties(input, this);
@@ -68,7 +68,7 @@ public class MovieEntity {
                 ", releaseDate: " + releaseDate +
                 ", director: '" + director + '\'' +
                 ", summary: '" + summary + '\'' +
-                ", categories: " + categories.toString() +
+                ", categories: " + movieCategories.toString() +
                 '}';
     }
 }

@@ -43,7 +43,7 @@ public class MovieOutputDTO {
         BeanUtils.copyProperties(entity, this);
         String durationString = DurationUtils.format(entity.getDuration());
         this.setDuration(durationString);
-        List<CategoryOutputDTO> categoriesOutput = entity.getCategories().stream().map(CategoryOutputDTO::new).toList();
+        List<CategoryOutputDTO> categoriesOutput = entity.getMovieCategories().stream().map(CategoryOutputDTO::new).toList();
         this.setCategories(categoriesOutput);
     }
 

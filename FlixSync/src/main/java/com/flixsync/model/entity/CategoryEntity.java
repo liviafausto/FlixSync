@@ -25,7 +25,7 @@ public class CategoryEntity {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "movieCategories")
     private Set<MovieEntity> movies;
 
     public CategoryEntity(String name){

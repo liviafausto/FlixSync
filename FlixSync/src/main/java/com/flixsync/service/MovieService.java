@@ -150,36 +150,6 @@ public class MovieService {
         serviceLog.end();
     }
 
-    protected MovieEntity addCategory(Integer movieId, CategoryEntity category, ServiceLog serviceLog) throws EntityNotFoundException, InvalidParameterException {
-        MovieEntity movie = getMovieById(movieId, serviceLog);
-
-        if(movie.getMovieCategories().contains(category)){
-            final String errorMessage = "Movie '" + movie.getName() + "' is already part of category '" + category.getName() + "'";
-            serviceLog.error(errorMessage);
-            serviceLog.end();
-            throw new InvalidParameterException(errorMessage);
-        }
-
-        serviceLog.info("Adding category " + category.getId() + " to movie " + movie.getId());
-        movie.getMovieCategories().add(category);
-        return movieRepository.save(movie);
-    }
-
-    protected MovieEntity removeCategory(Integer movieId, CategoryEntity category, ServiceLog serviceLog) throws EntityNotFoundException, InvalidParameterException {
-        MovieEntity movie = getMovieById(movieId, serviceLog);
-
-        if(!movie.getMovieCategories().contains(category)){
-            final String errorMessage = "Movie '" + movie.getName() + "' is not part of category '" + category.getName() + "'";
-            serviceLog.error(errorMessage);
-            serviceLog.end();
-            throw new InvalidParameterException(errorMessage);
-        }
-
-        serviceLog.info("Removing category " + category.getId() + " from movie " + movie.getId());
-        movie.getMovieCategories().remove(category);
-        return movieRepository.save(movie);
-    }
-
     protected MovieEntity getMovieById(Integer movieId, ServiceLog serviceLog) throws EntityNotFoundException{
         serviceLog.setElementName("movie");
         serviceLog.searchRequest(movieId);
@@ -193,6 +163,28 @@ public class MovieService {
 
         serviceLog.searchResponse(movie.get().toString());
         return movie.get();
+    }
+
+    protected MovieEntity addCategory(MovieEntity movie, CategoryEntity category, ServiceLog serviceLog) {
+        serviceLog.setElementName("movie");
+        serviceLog.info("Adding category '" + category.getName() + "' to movie '" + movie.getName() + "'");
+
+        movie.getCategories().add(category);
+        MovieEntity updatedMovie = movieRepository.save(movie);
+
+        serviceLog.updateResponse(updatedMovie.toString());
+        return updatedMovie;
+    }
+
+    protected MovieEntity removeCategory(MovieEntity movie, CategoryEntity category, ServiceLog serviceLog) {
+        serviceLog.setElementName("movie");
+        serviceLog.info("Removing category '" + category.getName() + "' from movie '" + movie.getName() + "'");
+
+        movie.getCategories().remove(category);
+        MovieEntity updatedMovie = movieRepository.save(movie);
+
+        serviceLog.updateResponse(updatedMovie.toString());
+        return updatedMovie;
     }
 
 }

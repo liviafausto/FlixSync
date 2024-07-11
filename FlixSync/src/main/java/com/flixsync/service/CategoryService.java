@@ -48,18 +48,6 @@ public class CategoryService {
         return categoryOutput;
     }
 
-    public CategoryMoviesListDTO findMoviesById(Integer categoryId) throws EntityNotFoundException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-MOVIES-BY-ID", "category");
-        serviceLog.start("Find all category's movies by id");
-
-        CategoryEntity category = getCategoryById(categoryId, serviceLog);
-        CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(category);
-        serviceLog.info("Category's movies found --> " + moviesList);
-
-        serviceLog.end();
-        return moviesList;
-    }
-
     public CategoryOutputDTO save(String name){
         ServiceLog serviceLog = new ServiceLog("CATEGORY-SAVE", "category");
         serviceLog.start("Register a category");
@@ -110,44 +98,6 @@ public class CategoryService {
         serviceLog.end();
     }
 
-    public CategoryMoviesListDTO addMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-ADD-MOVIE", "category");
-        serviceLog.start("Add movie to category");
-
-        CategoryEntity category = getCategoryById(categoryId, serviceLog);
-        MovieEntity updatedMovie = movieService.addCategory(movieId, category, serviceLog);
-        serviceLog.setElementName("category");
-
-        serviceLog.info("Adding movie " + updatedMovie.getId() + " to category " + category.getId());
-        category.getMovies().add(updatedMovie);
-        CategoryEntity updatedCategory = categoryRepository.save(category);
-
-        CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(updatedCategory);
-        serviceLog.updateResponse(moviesList.toString());
-
-        serviceLog.end();
-        return moviesList;
-    }
-
-    public CategoryMoviesListDTO removeMovie(Integer categoryId, Integer movieId) throws EntityNotFoundException, InvalidParameterException {
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-REMOVE-MOVIE", "category");
-        serviceLog.start("Remove movie from category");
-
-        CategoryEntity category = getCategoryById(categoryId, serviceLog);
-        MovieEntity updatedMovie = movieService.removeCategory(movieId, category, serviceLog);
-        serviceLog.setElementName("category");
-
-        serviceLog.info("Removing movie " + updatedMovie.getId() + " from category " + category.getId());
-        category.getMovies().remove(updatedMovie);
-        CategoryEntity updatedCategory = categoryRepository.save(category);
-
-        CategoryMoviesListDTO moviesList = new CategoryMoviesListDTO(updatedCategory);
-        serviceLog.updateResponse(moviesList.toString());
-
-        serviceLog.end();
-        return moviesList;
-    }
-
     protected CategoryEntity getCategoryById(Integer categoryId, ServiceLog serviceLog) throws EntityNotFoundException {
         serviceLog.setElementName("category");
         serviceLog.searchRequest(categoryId);
@@ -161,6 +111,30 @@ public class CategoryService {
 
         serviceLog.searchResponse(category.get().toString());
         return category.get();
+    }
+
+    protected CategoryMoviesListDTO addMovie(CategoryEntity category, MovieEntity movie, ServiceLog serviceLog){
+        serviceLog.setElementName("category");
+        serviceLog.info("Adding movie '" + movie.getName() + "' to category '" + category.getName() + "'");
+
+        category.getMovies().add(movie);
+        CategoryEntity updatedCategory = categoryRepository.save(category);
+        CategoryMoviesListDTO updatedMoviesList = new CategoryMoviesListDTO(updatedCategory);
+
+        serviceLog.updateResponse(updatedMoviesList.toString());
+        return updatedMoviesList;
+    }
+
+    protected CategoryMoviesListDTO removeMovie(CategoryEntity category, MovieEntity movie, ServiceLog serviceLog){
+        serviceLog.setElementName("category");
+        serviceLog.info("Removing movie '" + movie.getName() + "' from category '" + category.getName() + "'");
+
+        category.getMovies().remove(movie);
+        CategoryEntity updatedCategory = categoryRepository.save(category);
+        CategoryMoviesListDTO updatedMoviesList = new CategoryMoviesListDTO(updatedCategory);
+
+        serviceLog.updateResponse(updatedMoviesList.toString());
+        return updatedMoviesList;
     }
 
     protected CategoryTvShowsListDTO addTvShow(CategoryEntity category, TvShowEntity tvShow, ServiceLog serviceLog){

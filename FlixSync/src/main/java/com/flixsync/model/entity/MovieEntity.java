@@ -45,13 +45,8 @@ public class MovieEntity {
     private String summary;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "Movie_Category",
-            joinColumns = @JoinColumn(name = "id_movie"),
-            inverseJoinColumns = @JoinColumn(name = "id_category")
-    )
-    private Set<CategoryEntity> movieCategories;
+    @ManyToMany(mappedBy = "movies")
+    private Set<CategoryEntity> categories;
 
     public MovieEntity(MovieInputDTO input){
         BeanUtils.copyProperties(input, this);
@@ -68,7 +63,7 @@ public class MovieEntity {
                 ", releaseDate: " + releaseDate +
                 ", director: '" + director + '\'' +
                 ", summary: '" + summary + '\'' +
-                ", categories: " + movieCategories.toString() +
+                ", categories: " + categories.toString() +
                 '}';
     }
 }

@@ -25,7 +25,12 @@ public class CategoryEntity {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "movieCategories")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "Movie_Category",
+            joinColumns = @JoinColumn(name = "id_category"),
+            inverseJoinColumns = @JoinColumn(name = "id_movie")
+    )
     private Set<MovieEntity> movies;
 
     @JsonIgnore

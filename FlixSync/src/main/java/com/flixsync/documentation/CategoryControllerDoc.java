@@ -4,7 +4,6 @@ import com.flixsync.config.ExceptionResponse;
 import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import com.flixsync.model.dto.category.CategoryOutputDTO;
-import com.flixsync.model.dto.category.CategoryMoviesListDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,16 +27,19 @@ public interface CategoryControllerDoc {
                     @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
                     @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
             }
     )
     @GetMapping
-    ResponseEntity<Page<CategoryOutputDTO>> findAll(@RequestParam(name="page", defaultValue = "0") @PositiveOrZero Integer page,
-                                                    @RequestParam(name="amount", defaultValue = "10") @Positive Integer amount);
-
+    ResponseEntity<Page<CategoryOutputDTO>> findAll(
+            @RequestParam(name="page", defaultValue = "0") @PositiveOrZero Integer page,
+            @RequestParam(name="amount", defaultValue = "10") @Positive Integer amount
+    );
 
     @Operation(
             summary = "Find a category by id",
@@ -51,43 +53,21 @@ public interface CategoryControllerDoc {
                     @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
                     @ApiResponse(responseCode = "404", description = "Category not found", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
                     @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
             }
     )
     @GetMapping("/{id}")
-    ResponseEntity<CategoryOutputDTO> findById(@PathVariable(name = "id") @Positive Integer id) throws EntityNotFoundException;
-
-
-    @Operation(
-            summary = "Find all category's movies by id",
-            description = "Finds all movies associated with the category's id."
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Returns a category and its movies list", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryMoviesListDTO.class))
-                    }),
-                    @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-                    @ApiResponse(responseCode = "404", description = "Category not found", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
-                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-            }
-    )
-    @GetMapping("/movies-list")
-    ResponseEntity<CategoryMoviesListDTO> findMoviesById(@RequestParam(name = "categoryId") @Positive Integer categoryId) throws EntityNotFoundException;
-
+    ResponseEntity<CategoryOutputDTO> findById(
+            @PathVariable(name = "id") @Positive Integer id
+    ) throws EntityNotFoundException;
 
     @Operation(
             summary = "Register a category",
@@ -101,7 +81,9 @@ public interface CategoryControllerDoc {
                     @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
                     @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
@@ -109,7 +91,6 @@ public interface CategoryControllerDoc {
     )
     @PostMapping
     ResponseEntity<CategoryOutputDTO> save(@RequestParam(name = "name") @NotBlank String name);
-
 
     @Operation(
             summary = "Update a category by id",
@@ -123,20 +104,22 @@ public interface CategoryControllerDoc {
                     @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
                     @ApiResponse(responseCode = "404", description = "Category not found", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
                     @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
             }
     )
     @PutMapping("/{id}")
-    ResponseEntity<CategoryOutputDTO> update(@PathVariable(name = "id") @Positive Integer id,
-                                             @RequestParam(name = "name") @NotBlank String name)
-            throws EntityNotFoundException, InvalidParameterException;
-
+    ResponseEntity<CategoryOutputDTO> update(
+            @PathVariable(name = "id") @Positive Integer id,
+            @RequestParam(name = "name") @NotBlank String name
+    ) throws EntityNotFoundException, InvalidParameterException;
 
     @Operation(
             summary = "Remove a category by id",
@@ -148,66 +131,19 @@ public interface CategoryControllerDoc {
                     @ApiResponse(responseCode = "400", description = "Invalid id provided", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
                     @ApiResponse(responseCode = "404", description = "Category not found", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
                     @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
             }
     )
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> delete(@PathVariable(name = "id") @Positive Integer id) throws EntityNotFoundException;
-
-
-    @Operation(
-            summary = "Add movie to category",
-            description = "Adds a movie to a category, both specified by id."
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Returns the updated category with its movies list"),
-                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-                    @ApiResponse(responseCode = "404", description = "Category/Movie not found", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
-                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-            }
-    )
-    @PutMapping("/movies-list")
-    ResponseEntity<CategoryMoviesListDTO> addMovie(@RequestParam(name = "categoryId") @Positive Integer categoryId,
-                                                   @RequestParam(name = "movieId") @Positive Integer movieId)
-            throws EntityNotFoundException, InvalidParameterException;
-
-
-    @Operation(
-            summary = "Remove movie from category",
-            description = "Removes a movie from a category, both specified by id."
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Returns the updated category with its movies list"),
-                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-                    @ApiResponse(responseCode = "404", description = "Category/Movie not found", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-//                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource"),
-                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-                    }),
-            }
-    )
-    @DeleteMapping("/movies-list")
-    ResponseEntity<CategoryMoviesListDTO> removeMovie(@RequestParam(name = "categoryId") @Positive Integer categoryId,
-                                                      @RequestParam(name = "movieId") @Positive Integer movieId)
-            throws EntityNotFoundException, InvalidParameterException;
-
+    ResponseEntity<Void> delete(
+            @PathVariable(name = "id") @Positive Integer id
+    ) throws EntityNotFoundException;
 }

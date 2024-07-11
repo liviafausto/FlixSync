@@ -25,13 +25,14 @@ public class CategoryService {
     public Page<CategoryOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
         ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-ALL", "category");
         serviceLog.start("Find all categories");
-
         serviceLog.pageRequest(pageNumber, amountPerPage);
-        Page<CategoryEntity> categoriesPage = categoryRepository.findAll(PageRequest.of(pageNumber, amountPerPage, Sort.by("id")));
-        serviceLog.pageResponse(categoriesPage.getNumberOfElements());
 
+        Page<CategoryEntity> categoriesPage = categoryRepository.findAll(PageRequest.of(pageNumber, amountPerPage, Sort.by("id")));
+        Page<CategoryOutputDTO> categoriesPageOutput = categoriesPage.map(CategoryOutputDTO::new);
+
+        serviceLog.pageResponse(categoriesPage.getNumberOfElements());
         serviceLog.end();
-        return categoriesPage.map(CategoryOutputDTO::new);
+        return categoriesPageOutput;
     }
 
     public CategoryOutputDTO findById(Integer categoryId) throws EntityNotFoundException {
@@ -39,9 +40,10 @@ public class CategoryService {
         serviceLog.start("Find a category by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
+        CategoryOutputDTO categoryOutput = new CategoryOutputDTO(category);
 
         serviceLog.end();
-        return new CategoryOutputDTO(category);
+        return categoryOutput;
     }
 
     public CategoryMoviesListDTO findMoviesById(Integer categoryId) throws EntityNotFoundException {
@@ -59,26 +61,39 @@ public class CategoryService {
     public CategoryOutputDTO save(String name){
         ServiceLog serviceLog = new ServiceLog("CATEGORY-SAVE", "category");
         serviceLog.start("Register a category");
-
         serviceLog.saveRequest("{name: '" + name + "'}");
+
         CategoryEntity category = new CategoryEntity(name);
         CategoryEntity createdCategory = categoryRepository.save(category);
-        serviceLog.saveResponse(createdCategory.toString());
+        CategoryOutputDTO createdCategoryOutput = new CategoryOutputDTO(createdCategory);
 
+        serviceLog.saveResponse(createdCategory.toString());
         serviceLog.end();
-        return new CategoryOutputDTO(createdCategory);
+        return createdCategoryOutput;
     }
 
-    public CategoryOutputDTO update(Integer categoryId, String name) throws EntityNotFoundException {
+    public CategoryOutputDTO update(Integer categoryId, String name) throws EntityNotFoundException, InvalidParameterException {
         ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE", "category");
         serviceLog.start("Update a category by id");
 
         CategoryEntity category = getCategoryById(categoryId, serviceLog);
-        CategoryEntity updatedCategory = updateName(category, name);
-        serviceLog.updateResponse(updatedCategory.toString());
 
+        if(name.equals(category.getName())){
+            final String errorMessage = "Category " + categoryId + " is already named '" + name + "'";
+            serviceLog.error(errorMessage);
+            serviceLog.end();
+            throw new InvalidParameterException(errorMessage);
+        }
+
+        serviceLog.updateRequest("name", category.getId(), category.getName(), name);
+        category.setName(name);
+
+        CategoryEntity updatedCategory = categoryRepository.save(category);
+        CategoryOutputDTO updatedCategoryOutput = new CategoryOutputDTO(updatedCategory);
+
+        serviceLog.updateResponse(updatedCategory.toString());
         serviceLog.end();
-        return new CategoryOutputDTO(updatedCategory);
+        return updatedCategoryOutput;
     }
 
     public void delete(Integer categoryId) throws EntityNotFoundException {
@@ -144,12 +159,5 @@ public class CategoryService {
 
         serviceLog.searchResponse(category.get().toString());
         return category.get();
-    }
-
-    private CategoryEntity updateName(CategoryEntity category, String newName){
-        ServiceLog serviceLog = new ServiceLog("CATEGORY-UPDATE-NAME", "category");
-        serviceLog.updateRequest("name", category.getId(), category.getName(), newName);
-        category.setName(newName);
-        return categoryRepository.save(category);
     }
 }

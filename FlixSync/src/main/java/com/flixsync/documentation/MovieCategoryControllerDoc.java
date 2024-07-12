@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 public interface MovieCategoryControllerDoc {
     @Operation(
@@ -42,7 +39,7 @@ public interface MovieCategoryControllerDoc {
     )
     @GetMapping
     ResponseEntity<CategoryMoviesListDTO> findMoviesByCategory(
-            @RequestParam(name = "categoryId") @Positive Integer categoryId
+            @PathVariable(name = "id") @Positive Integer categoryId
     ) throws EntityNotFoundException;
 
     @Operation(
@@ -68,7 +65,7 @@ public interface MovieCategoryControllerDoc {
     )
     @PutMapping
     ResponseEntity<CategoryMoviesListDTO> addMovie(
-            @RequestParam(name = "categoryId") @Positive Integer categoryId,
+            @PathVariable(name = "id") @Positive Integer categoryId,
             @RequestParam(name = "movieId") @Positive Integer movieId
     ) throws EntityNotFoundException, InvalidParameterException;
 
@@ -96,7 +93,7 @@ public interface MovieCategoryControllerDoc {
     )
     @DeleteMapping
     ResponseEntity<CategoryMoviesListDTO> removeMovie(
-            @RequestParam(name = "categoryId") @Positive Integer categoryId,
+            @PathVariable(name = "id") @Positive Integer categoryId,
             @RequestParam(name = "movieId") @Positive Integer movieId
     ) throws EntityNotFoundException, InvalidParameterException;
 }

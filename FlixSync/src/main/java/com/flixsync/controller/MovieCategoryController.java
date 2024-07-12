@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/categories/movies-list")
+@RequestMapping("/categories/{id}/movies-list")
 @RequiredArgsConstructor
 public class MovieCategoryController implements MovieCategoryControllerDoc {
     private final MovieCategoryService movieCategoryService;

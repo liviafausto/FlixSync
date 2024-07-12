@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 public interface TvShowCategoryControllerDoc {
     @Operation(
@@ -42,7 +39,7 @@ public interface TvShowCategoryControllerDoc {
     )
     @GetMapping
     ResponseEntity<CategoryTvShowsListDTO> findTvShowsByCategory(
-            @RequestParam(name = "categoryId") @Positive Integer categoryId
+            @PathVariable(name = "id") @Positive Integer categoryId
     ) throws EntityNotFoundException;
 
     @Operation(
@@ -70,7 +67,7 @@ public interface TvShowCategoryControllerDoc {
     )
     @PutMapping
     ResponseEntity<CategoryTvShowsListDTO> addTvShowToCategory(
-            @RequestParam(name = "categoryId") @Positive Integer categoryId,
+            @PathVariable(name = "id") @Positive Integer categoryId,
             @RequestParam(name = "tvShowId") @Positive Integer tvShowId
     ) throws EntityNotFoundException, InvalidParameterException;
 
@@ -99,7 +96,7 @@ public interface TvShowCategoryControllerDoc {
     )
     @DeleteMapping
     ResponseEntity<CategoryTvShowsListDTO> removeTvShowFromCategory(
-            @RequestParam(name = "categoryId") @Positive Integer categoryId,
+            @PathVariable(name = "id") @Positive Integer categoryId,
             @RequestParam(name = "tvShowId") @Positive Integer tvShowId
     ) throws EntityNotFoundException, InvalidParameterException;
 }

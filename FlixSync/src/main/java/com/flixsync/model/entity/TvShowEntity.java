@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -45,12 +46,28 @@ public class TvShowEntity {
     @ManyToMany(mappedBy = "tvShows")
     private Set<CategoryEntity> categories;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "episodeId.tvShow")
+    private Set<EpisodeEntity> episodes;
+
     public TvShowEntity(TvShowInputDTO input){
         BeanUtils.copyProperties(input, this);
         Duration averageDuration = DurationUtils.getDuration(null, input.getMinutesPerEpisode());
         this.setAverageDuration(averageDuration);
         this.setSeasons(0);
         this.setCategories(new HashSet<>());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TvShowEntity tvShow)) return false;
+        return Objects.equals(getId(), tvShow.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 
     @Override

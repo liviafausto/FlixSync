@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -52,6 +53,7 @@ public class MovieEntity {
         BeanUtils.copyProperties(input, this);
         Duration duration = DurationUtils.getDuration(input.getHours(), input.getMinutes());
         this.setDuration(duration);
+        this.setCategories(new HashSet<>());
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.hibernate.annotations.Type;
 import org.springframework.beans.BeanUtils;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -49,6 +50,7 @@ public class TvShowEntity {
         Duration averageDuration = DurationUtils.getDuration(null, input.getMinutesPerEpisode());
         this.setAverageDuration(averageDuration);
         this.setSeasons(0);
+        this.setCategories(new HashSet<>());
     }
 
     @Override

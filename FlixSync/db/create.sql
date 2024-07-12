@@ -29,7 +29,7 @@ CREATE TABLE Tv_Show(
     title VARCHAR(255) NOT NULL,
     average_duration INTERVAL,
     summary TEXT,
-    seasons INT,
+    seasons INT DEFAULT 0,
     CONSTRAINT pk_tv_show PRIMARY KEY(id)
 );
 

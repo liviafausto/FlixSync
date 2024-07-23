@@ -21,8 +21,8 @@ public class CategoryController implements CategoryControllerDoc {
     private final CategoryService categoryService;
 
     @Override
-    public ResponseEntity<Page<CategoryOutputDTO>> findAll(Integer page, Integer amount) {
-        return new ResponseEntity<>(categoryService.findAll(page, amount), HttpStatus.OK);
+    public ResponseEntity<Page<CategoryOutputDTO>> findAll(Integer page, Integer size) {
+        return new ResponseEntity<>(categoryService.findAll(page, size), HttpStatus.OK);
     }
 
     @Override

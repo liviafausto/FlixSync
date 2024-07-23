@@ -21,8 +21,8 @@ public class MovieController implements MovieControllerDoc {
     private final MovieService movieService;
 
     @Override
-    public ResponseEntity<Page<MovieOutputDTO>> findAll(Integer page, Integer amount) {
-        return new ResponseEntity<>(movieService.findAll(page, amount), HttpStatus.OK);
+    public ResponseEntity<Page<MovieOutputDTO>> findAll(Integer page, Integer size) {
+        return new ResponseEntity<>(movieService.findAll(page, size), HttpStatus.OK);
     }
 
     @Override

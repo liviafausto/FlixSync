@@ -40,7 +40,7 @@ public interface MovieControllerDoc {
     @GetMapping
     ResponseEntity<Page<MovieOutputDTO>> findAll(
             @RequestParam(name="page", defaultValue = "0") @PositiveOrZero Integer page,
-            @RequestParam(name="amount", defaultValue = "10") @Positive Integer amount
+            @RequestParam(name="size", defaultValue = "10") @Positive Integer size
     );
 
 

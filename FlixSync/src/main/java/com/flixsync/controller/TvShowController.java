@@ -22,8 +22,8 @@ public class TvShowController implements TvShowControllerDoc {
     private final TvShowService tvShowService;
 
     @Override
-    public ResponseEntity<Page<TvShowOutputDTO>> findAll(Integer page, Integer amount) {
-        return new ResponseEntity<>(tvShowService.findAll(page, amount), HttpStatus.OK);
+    public ResponseEntity<Page<TvShowOutputDTO>> findAll(Integer page, Integer size) {
+        return new ResponseEntity<>(tvShowService.findAll(page, size), HttpStatus.OK);
     }
 
     @Override

@@ -8,11 +8,12 @@ import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.TvShowRepository;
 import com.flixsync.utils.DurationUtils;
+import com.flixsync.utils.PageUtils;
 import com.flixsync.utils.ServiceLog;
 import com.flixsync.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,12 @@ import java.util.Optional;
 public class TvShowService {
     private final TvShowRepository tvShowRepository;
 
-    public Page<TvShowOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
+    public Page<TvShowOutputDTO> findAll(Integer pageNumber, Integer pageSize){
         ServiceLog serviceLog = new ServiceLog("TV-SHOW-FIND-ALL", "TV show");
         serviceLog.start("Find all TV shows");
-        serviceLog.pageRequest(pageNumber, amountPerPage);
+        serviceLog.pageRequest(pageNumber, pageSize);
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, amountPerPage, Sort.by("id"));
+        Pageable pageRequest = PageUtils.getPageRequest(pageNumber, pageSize, Sort.by("id"));
         Page<TvShowEntity> tvShows = tvShowRepository.findAll(pageRequest);
         Page<TvShowOutputDTO> tvShowsOutput = tvShows.map(TvShowOutputDTO::new);
 

@@ -8,14 +8,14 @@ import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.utils.DurationUtils;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.repository.MovieRepository;
+import com.flixsync.utils.PageUtils;
 import com.flixsync.utils.ServiceLog;
 import com.flixsync.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.View;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -25,14 +25,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MovieService {
     private final MovieRepository movieRepository;
-    private final View error;
 
-    public Page<MovieOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
+    public Page<MovieOutputDTO> findAll(Integer pageNumber, Integer pageSize){
         ServiceLog serviceLog = new ServiceLog("MOVIE-FIND-ALL", "movie");
         serviceLog.start("Find all movies");
-        serviceLog.pageRequest(pageNumber, amountPerPage);
+        serviceLog.pageRequest(pageNumber, pageSize);
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, amountPerPage, Sort.by("id"));
+        Pageable pageRequest = PageUtils.getPageRequest(pageNumber, pageSize, Sort.by("id"));
         Page<MovieEntity> movies = movieRepository.findAll(pageRequest);
         Page<MovieOutputDTO> moviesOutput = movies.map(MovieOutputDTO::new);
 

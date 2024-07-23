@@ -9,10 +9,11 @@ import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.model.entity.MovieEntity;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.CategoryRepository;
+import com.flixsync.utils.PageUtils;
 import com.flixsync.utils.ServiceLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +23,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final MovieService movieService;
 
-    public Page<CategoryOutputDTO> findAll(Integer pageNumber, Integer amountPerPage){
+    public Page<CategoryOutputDTO> findAll(Integer pageNumber, Integer pageSize){
         ServiceLog serviceLog = new ServiceLog("CATEGORY-FIND-ALL", "category");
         serviceLog.start("Find all categories");
-        serviceLog.pageRequest(pageNumber, amountPerPage);
+        serviceLog.pageRequest(pageNumber, pageSize);
 
-        Page<CategoryEntity> categoriesPage = categoryRepository.findAll(PageRequest.of(pageNumber, amountPerPage, Sort.by("id")));
+        Pageable pageRequest = PageUtils.getPageRequest(pageNumber, pageSize, Sort.by("id"));
+        Page<CategoryEntity> categoriesPage = categoryRepository.findAll(pageRequest);
         Page<CategoryOutputDTO> categoriesPageOutput = categoriesPage.map(CategoryOutputDTO::new);
 
         serviceLog.pageResponse(categoriesPage.getNumberOfElements());

@@ -5,6 +5,7 @@ import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.model.dto.episode.EpisodeOutputDTO;
 import com.flixsync.service.EpisodeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EpisodeController implements EpisodeControllerDoc {
     private final EpisodeService episodeService;
+
+    @Override public ResponseEntity<Page<EpisodeOutputDTO>> findAll(Integer tvShowId, Integer page, Integer size) throws EntityNotFoundException {
+        return new ResponseEntity<>(episodeService.findAll(tvShowId, page, size), HttpStatus.OK);
+    }
 
     @Override
     public ResponseEntity<List<EpisodeOutputDTO>> findAllPerSeason(Integer tvShowId, Integer season) throws EntityNotFoundException {

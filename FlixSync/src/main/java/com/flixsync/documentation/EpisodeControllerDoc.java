@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 public interface EpisodeControllerDoc {
+    @Operation(
+            summary = "Find all episodes",
+            description = "Finds all the episodes associated with the TV show's id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns a page containing the specified amount of episodes"),
+                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "TV show not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+            }
+    )
+    @GetMapping
+    ResponseEntity<Page<EpisodeOutputDTO>> findAll(
+            @PathVariable(name = "id") @Positive Integer tvShowId,
+            @RequestParam(name="page", defaultValue = "0") @PositiveOrZero Integer page,
+            @RequestParam(name="size", defaultValue = "10") @Positive Integer size
+    ) throws EntityNotFoundException;
+
     @Operation(
             summary = "Find all episodes per season",
             description = "Finds all the episodes associated with the TV show's id and season."
@@ -30,14 +60,17 @@ public interface EpisodeControllerDoc {
                     @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     }),
+                    @ApiResponse(responseCode = "404", description = "TV show not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
                     @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
                     })
             }
     )
-    @GetMapping
+    @GetMapping("/s{season}")
     ResponseEntity<List<EpisodeOutputDTO>> findAllPerSeason(
             @PathVariable(name = "id") @Positive Integer tvShowId,
-            @RequestParam(name = "season") @Positive Integer season
+            @PathVariable(name = "season") @Positive Integer season
     ) throws EntityNotFoundException;
 }

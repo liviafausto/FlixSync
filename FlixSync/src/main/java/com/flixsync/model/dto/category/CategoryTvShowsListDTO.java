@@ -2,6 +2,8 @@ package com.flixsync.model.dto.category;
 
 import com.flixsync.model.dto.tvshow.TvShowOutputDTO;
 import com.flixsync.model.entity.CategoryEntity;
+import com.flixsync.model.entity.TvShowEntity;
+import com.flixsync.utils.ListUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,8 +29,9 @@ public class CategoryTvShowsListDTO {
 
     public CategoryTvShowsListDTO(CategoryEntity entity){
         BeanUtils.copyProperties(entity, this);
-        List<TvShowOutputDTO> tvShows = entity.getTvShows().stream().map(TvShowOutputDTO::new).toList();
-        this.setTvShows(tvShows);
+        List<TvShowEntity> sortedTvShows = ListUtils.getSortedList(entity.getTvShows(), "id");
+        List<TvShowOutputDTO> tvShowsOuput = sortedTvShows.stream().map(TvShowOutputDTO::new).toList();
+        this.setTvShows(tvShowsOuput);
     }
 
     @Override

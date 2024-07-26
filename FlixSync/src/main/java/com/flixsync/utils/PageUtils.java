@@ -26,6 +26,23 @@ public class PageUtils {
         if(endIndex > allElements.size())
             endIndex = allElements.size();
 
-        return allElements.subList(startIndex, endIndex);
+        if(pageRequest.getSort().isUnsorted())
+            return allElements.subList(startIndex, endIndex);
+
+        final String sortByProperty = getSortByProperty(pageRequest);
+        List<T> allElementsSorted = ListUtils.sortList(allElements, sortByProperty);
+
+        return allElementsSorted.subList(startIndex, endIndex);
+    }
+
+    public static String getSortByProperty(Pageable pageRequest){
+        final Sort sortRequest = pageRequest.getSort();
+
+        if(sortRequest.getOrderFor("id") != null)
+            return "id";
+        else if(sortRequest.getOrderFor("episodeId") != null)
+            return "episodeId";
+
+        return null;
     }
 }

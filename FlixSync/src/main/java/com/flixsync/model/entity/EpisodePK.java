@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class EpisodePK implements Serializable {
+public class EpisodePK implements Serializable, Comparable<EpisodePK> {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,9 @@ public class EpisodePK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof EpisodePK episodePK)) return false;
-        return Objects.equals(getTvShow(), episodePK.getTvShow()) && Objects.equals(getSeason(), episodePK.getSeason()) && Objects.equals(getNumber(), episodePK.getNumber());
+        return Objects.equals(getTvShow(), episodePK.getTvShow())
+                && Objects.equals(getSeason(), episodePK.getSeason())
+                && Objects.equals(getNumber(), episodePK.getNumber());
     }
 
     @Override
@@ -51,5 +53,19 @@ public class EpisodePK implements Serializable {
                 ", season: " + season +
                 ", number: " + number +
                 '}';
+    }
+
+    @Override
+    public int compareTo(EpisodePK other) {
+        final boolean sameTvShow = this.getTvShow().equals(other.getTvShow());
+        final boolean sameSeason = this.getSeason().equals(other.getSeason());
+
+        if(sameTvShow && sameSeason) {
+            return this.getNumber().compareTo(other.getNumber());
+        } else if(sameTvShow) {
+            return this.getSeason().compareTo(other.getSeason());
+        } else {
+            return this.getTvShow().getId().compareTo(other.getTvShow().getId());
+        }
     }
 }

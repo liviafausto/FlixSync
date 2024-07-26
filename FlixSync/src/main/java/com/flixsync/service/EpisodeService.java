@@ -5,6 +5,7 @@ import com.flixsync.model.dto.episode.EpisodeOutputDTO;
 import com.flixsync.model.entity.EpisodeEntity;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.EpisodeRepository;
+import com.flixsync.utils.ListUtils;
 import com.flixsync.utils.PageUtils;
 import com.flixsync.utils.ServiceLog;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class EpisodeService {
 
         serviceLog.pageRequest(pageNumber, pageSize);
 
-        final Sort pageSort = Sort.by("episodeId.season", "episodeId.number");
+        final Sort pageSort = Sort.by("episodeId");
         Page<EpisodeEntity> episodesPage = PageUtils.getPage(episodesList, pageNumber, pageSize, pageSort);
         Page<EpisodeOutputDTO> episodesOutputPage = episodesPage.map(EpisodeOutputDTO::new);
 
@@ -46,7 +47,8 @@ public class EpisodeService {
         serviceLog.info("Requesting episodes from TV show '" + tvShow.getTitle() + "', season " + season);
 
         List<EpisodeEntity> episodesList = tvShow.getEpisodes().stream().filter(e -> e.getEpisodeId().getSeason().equals(season)).toList();
-        List<EpisodeOutputDTO> episodesOutput = episodesList.stream().map(EpisodeOutputDTO::new).toList();
+        List<EpisodeEntity> sortedEpisodes = ListUtils.sortList(episodesList, "episodeId");
+        List<EpisodeOutputDTO> episodesOutput = sortedEpisodes.stream().map(EpisodeOutputDTO::new).toList();
 
         serviceLog.info(episodesList.size() + " episodes were retrieved");
         serviceLog.end();

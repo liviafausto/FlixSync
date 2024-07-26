@@ -2,6 +2,8 @@ package com.flixsync.model.dto.category;
 
 import com.flixsync.model.dto.movie.MovieOutputDTO;
 import com.flixsync.model.entity.CategoryEntity;
+import com.flixsync.model.entity.MovieEntity;
+import com.flixsync.utils.ListUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +29,8 @@ public class CategoryMoviesListDTO {
 
     public CategoryMoviesListDTO(CategoryEntity entity){
         BeanUtils.copyProperties(entity, this);
-        List<MovieOutputDTO> moviesOutput = entity.getMovies().stream().map(MovieOutputDTO::new).toList();
+        List<MovieEntity> sortedMovies = ListUtils.getSortedList(entity.getMovies(), "id");
+        List<MovieOutputDTO> moviesOutput = sortedMovies.stream().map(MovieOutputDTO::new).toList();
         this.setMovies(moviesOutput);
     }
 

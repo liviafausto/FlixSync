@@ -1,8 +1,10 @@
 package com.flixsync.model.dto.movie;
 
 import com.flixsync.model.dto.category.CategoryOutputDTO;
+import com.flixsync.model.entity.CategoryEntity;
 import com.flixsync.utils.DurationUtils;
 import com.flixsync.model.entity.MovieEntity;
+import com.flixsync.utils.ListUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,9 +43,12 @@ public class MovieOutputDTO {
 
     public MovieOutputDTO(MovieEntity entity){
         BeanUtils.copyProperties(entity, this);
+
         String durationString = DurationUtils.format(entity.getDuration());
         this.setDuration(durationString);
-        List<CategoryOutputDTO> categoriesOutput = entity.getCategories().stream().map(CategoryOutputDTO::new).toList();
+
+        List<CategoryEntity> sortedCategories = ListUtils.getSortedList(entity.getCategories(), "name");
+        List<CategoryOutputDTO> categoriesOutput = sortedCategories.stream().map(CategoryOutputDTO::new).toList();
         this.setCategories(categoriesOutput);
     }
 

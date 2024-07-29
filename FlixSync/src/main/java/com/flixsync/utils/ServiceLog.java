@@ -36,7 +36,11 @@ public class ServiceLog {
     }
 
     public void searchRequest(Integer id){
-        log.info("{} Searching for {} - ID: {}", SERVICE_NAME, elementName, id);
+        searchRequest(id.toString());
+    }
+
+    public void searchRequest(String idToString){
+        log.info("{} Searching for {} - ID: {}", SERVICE_NAME, elementName, idToString);
     }
 
     public void searchResponse(String body){

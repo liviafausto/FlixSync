@@ -29,4 +29,8 @@ public class EpisodeController implements EpisodeControllerDoc {
     public ResponseEntity<List<EpisodeOutputDTO>> findAllPerSeason(Integer tvShowId, Integer season) throws EntityNotFoundException {
         return new ResponseEntity<>(episodeService.findAllPerSeason(tvShowId, season), HttpStatus.OK);
     }
+
+    @Override public ResponseEntity<EpisodeOutputDTO> findById(Integer tvShowId, Integer season, Integer episodeNumber) throws EntityNotFoundException {
+        return new ResponseEntity<>(episodeService.findById(tvShowId, season, episodeNumber), HttpStatus.OK);
+    }
 }

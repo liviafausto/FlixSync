@@ -73,4 +73,35 @@ public interface EpisodeControllerDoc {
             @PathVariable(name = "id") @Positive Integer tvShowId,
             @PathVariable(name = "season") @Positive Integer season
     ) throws EntityNotFoundException;
+
+    @Operation(
+            summary = "Find an episode by id",
+            description = "Finds the episode associated with a specific id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns the data of an episode", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = EpisodeOutputDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "TV show/Episode not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+            }
+    )
+    @GetMapping("/s{season}/e{episode}")
+    ResponseEntity<EpisodeOutputDTO> findById(
+            @PathVariable(name = "id") @Positive Integer tvShowId,
+            @PathVariable(name = "season") @Positive Integer season,
+            @PathVariable(name = "episode") @Positive Integer episodeNumber
+    ) throws EntityNotFoundException;
+
 }

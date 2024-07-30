@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { MoviesRoutingModule } from './movies-routing.module';
 import { MoviesComponent } from './movies/movies.component';
+import { AppMaterialModule } from '../shared/app-material/app-material.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { MoviesComponent } from './movies/movies.component';
   ],
   imports: [
     CommonModule,
-    MoviesRoutingModule
+    MoviesRoutingModule,
+    AppMaterialModule
   ]
 })
 export class MoviesModule { }

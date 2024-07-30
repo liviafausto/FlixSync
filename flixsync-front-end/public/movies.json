@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "1",
+    "name": "Inception",
+    "duration": "2 hours 28 minutes",
+    "release_date": "2010-09-24",
+    "director": "Christopher Nolan",
+    "summary": "A thief who steals corporate secrets through the use of dream-sharing technology..."
+  },
+  {
+    "_id": "2",
+    "name": "Oppenheimer",
+    "duration": "3 hours 1 minute",
+    "release_date": "2023-07-20",
+    "director": "Christopher Nolan",
+    "summary": "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb."
+  },
+  {
+    "_id": "3",
+    "name": "I Care A Lot",
+    "duration": "1 hour 58 minutes",
+    "release_date": "2021-02-20",
+    "director": "J Blakeson",
+    "summary": "A crooked legal guardian who drains the savings of her elderly wards meets her match when a woman..."
+  }
+]

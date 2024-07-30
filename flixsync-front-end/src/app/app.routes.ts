@@ -12,5 +12,9 @@ export const routes: Routes = [
   {
     path: 'tv-shows',
     loadChildren: () => import('./tv-shows/tv-shows.module').then(m => m.TvShowsModule)
+  },
+  {
+    path: 'episodes',
+    loadChildren: () => import('./episodes/episodes.module').then(m => m.EpisodesModule)
   }
 ];

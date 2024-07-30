@@ -1,0 +1,6 @@
+[
+  {"_id": "1", "name": "Action"},
+  {"_id": "2", "name": "Adventure"},
+  {"_id": "3", "name": "Animation"},
+  {"_id": "4", "name": "Biography"}
+]

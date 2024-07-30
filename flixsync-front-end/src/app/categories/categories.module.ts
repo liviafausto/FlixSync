@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { AppMaterialModule } from '../shared/app-material/app-material.module';
 import { CategoriesRoutingModule } from './categories-routing.module';
 import { CategoriesComponent } from './categories/categories.component';
 
@@ -11,7 +12,8 @@ import { CategoriesComponent } from './categories/categories.component';
   ],
   imports: [
     CommonModule,
-    CategoriesRoutingModule
+    CategoriesRoutingModule,
+    AppMaterialModule
   ]
 })
 export class CategoriesModule { }

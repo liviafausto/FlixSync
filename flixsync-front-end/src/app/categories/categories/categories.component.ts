@@ -11,11 +11,11 @@ import { CategoriesService } from '../services/categories.service';
 })
 export class CategoriesComponent {
 
-  categories: Observable<Category[]>;
+  categories$: Observable<Category[]>;
   displayedColumns = ['id', 'name'];
 
   constructor(private categoriesService: CategoriesService) {
-    this.categories = this.categoriesService.list();
+    this.categories$ = this.categoriesService.list();
   }
 
 }

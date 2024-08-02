@@ -11,11 +11,11 @@ import { MoviesService } from '../services/movies.service';
 })
 export class MoviesComponent {
 
-  movies: Observable<Movie[]>;
+  movies$: Observable<Movie[]>;
   displayedColumns = ['id', 'name', 'duration', 'release-date', 'director', 'summary'];
 
   constructor(private moviesService: MoviesService) {
-    this.movies = this.moviesService.list();
+    this.movies$ = this.moviesService.list();
   }
 
 }

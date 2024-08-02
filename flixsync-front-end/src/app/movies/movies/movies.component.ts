@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { catchError, Observable, of } from 'rxjs';
 
+import { ErrorDialogComponent } from '../../shared/components/error-dialog/error-dialog.component';
 import { Movie } from '../model/movie';
 import { MoviesService } from '../services/movies.service';
 
@@ -14,8 +16,17 @@ export class MoviesComponent {
   movies$: Observable<Movie[]>;
   displayedColumns = ['id', 'name', 'duration', 'release-date', 'director', 'summary'];
 
-  constructor(private moviesService: MoviesService) {
-    this.movies$ = this.moviesService.list();
+  constructor(private moviesService: MoviesService, public dialog: MatDialog) {
+    this.movies$ = this.moviesService.list().pipe(
+      catchError(error => {
+        this.onError('An error occurred while loading movies.');
+        return of([]);
+      })
+    );
+  }
+
+  onError(errorMsg: string){
+    this.dialog.open(ErrorDialogComponent, {data: errorMsg})
   }
 
 }

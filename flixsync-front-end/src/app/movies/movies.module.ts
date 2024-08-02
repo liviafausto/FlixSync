@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { AppMaterialModule } from '../shared/app-material/app-material.module';
+import { ErrorDialogComponent } from '../shared/components/error-dialog/error-dialog.component';
 import { MoviesRoutingModule } from './movies-routing.module';
 import { MoviesComponent } from './movies/movies.component';
-import { AppMaterialModule } from '../shared/app-material/app-material.module';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { AppMaterialModule } from '../shared/app-material/app-material.module';
   imports: [
     CommonModule,
     MoviesRoutingModule,
-    AppMaterialModule
+    AppMaterialModule,
+    ErrorDialogComponent
   ]
 })
 export class MoviesModule { }

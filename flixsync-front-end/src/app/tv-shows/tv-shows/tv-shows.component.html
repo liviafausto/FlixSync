@@ -1,1 +1,53 @@
-<p style="color: white;">tv-shows works!</p>
+<ng-template #loading>
+  <div class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
+
+<mat-card appearance="outlined">
+  <mat-card-content>
+
+    <mat-toolbar>
+      <span>Tv Shows</span>
+    </mat-toolbar>
+
+    <div *ngIf="tvShows$ | async as tvShows; else loading">
+      <table mat-table [dataSource]="tvShows" class="mat-elevation-z8">
+        <!-- Id Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> Id </th>
+          <td mat-cell *matCellDef="let tvShow"> {{tvShow._id}} </td>
+        </ng-container>
+
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef> Title </th>
+          <td mat-cell *matCellDef="let tvShow"> {{tvShow.title}} </td>
+        </ng-container>
+
+        <!-- Average Duration Column -->
+        <ng-container matColumnDef="average-duration">
+          <th mat-header-cell *matHeaderCellDef> Average Duration </th>
+          <td mat-cell *matCellDef="let tvShow"> {{tvShow.average_duration}} </td>
+        </ng-container>
+
+        <!-- Summary -->
+        <ng-container matColumnDef="summary">
+          <th mat-header-cell *matHeaderCellDef> Summary </th>
+          <td mat-cell *matCellDef="let tvShow"> {{tvShow.summary}} </td>
+        </ng-container>
+
+        <!-- Seasons Column -->
+        <ng-container matColumnDef="seasons">
+          <th mat-header-cell *matHeaderCellDef> Seasons </th>
+          <td mat-cell *matCellDef="let tvShow"> {{tvShow.seasons}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+    </div>
+
+  </mat-card-content>
+</mat-card>

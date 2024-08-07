@@ -9,7 +9,7 @@ import { Category } from '../model/category';
 })
 export class CategoriesService {
 
-  private readonly API = 'categories.json'
+  private readonly API = '/api/categories'
 
   constructor(private httpClient: HttpClient) { }
 

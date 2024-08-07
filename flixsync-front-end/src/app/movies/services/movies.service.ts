@@ -9,7 +9,7 @@ import { Movie } from '../model/movie';
 })
 export class MoviesService {
 
-  private readonly API = 'movies.json'
+  private readonly API = '/api/movies?page=0&size=10'
 
   constructor(private httpClient: HttpClient) { }
 

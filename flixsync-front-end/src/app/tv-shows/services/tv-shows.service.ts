@@ -9,7 +9,7 @@ import { TvShow } from '../model/tv-show';
 })
 export class TvShowsService {
 
-  private readonly API = 'tv_shows.json'
+  private readonly API = '/api/tv-shows'
 
   constructor(private httpClient: HttpClient) { }
 

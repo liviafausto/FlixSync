@@ -1,0 +1,63 @@
+<mat-grid-list cols="2" rowHeight="2:1">
+
+  <mat-grid-tile>
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Movies</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>This is a temporary layout built to facilitate the development of this plataform.</p>
+        <p>Go to the '/movies' page if you want to check/edit movies.</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-fab extended (click)="goToMovies()">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to '/movies'
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile>
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Tv Shows</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>This is a temporary layout built to facilitate the development of this plataform.</p>
+        <p>Go to the '/tv-shows' page if you want to check/edit TV shows or episodes.</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-fab extended (click)="goToTvShows()">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to '/tv-shows'
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile>
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Categories</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>This is a temporary layout built to facilitate the development of this plataform.</p>
+        <p>Go to the '/categories' page if you want to check/edit categories.</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-fab extended (click)="goToCategories()">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to '/categories'
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

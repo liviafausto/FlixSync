@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full',  redirectTo: 'movies'},
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+  },
   {
     path: 'movies',
     loadChildren: () => import('./movies/movies.module').then(m => m.MoviesModule)
@@ -13,9 +17,5 @@ export const routes: Routes = [
   {
     path: 'tv-shows',
     loadChildren: () => import('./tv-shows/tv-shows.module').then(m => m.TvShowsModule)
-  },
-  {
-    path: 'episodes',
-    loadChildren: () => import('./episodes/episodes.module').then(m => m.EpisodesModule)
   }
 ];

@@ -68,4 +68,24 @@ public class EpisodePK implements Serializable, Comparable<EpisodePK> {
             return this.getTvShow().getId().compareTo(other.getTvShow().getId());
         }
     }
+
+    public String formatted(){
+        return tvShow.getTitle() + " - "
+                + getSeasonFormatted() + " "
+                + getEpisodeFormatted();
+    }
+
+    public String getSeasonFormatted(){
+        if(season < 10)
+            return "S0" + season;
+        else
+            return "S" + season;
+    }
+
+    public String getEpisodeFormatted(){
+        if(number < 10)
+            return "E0" + number;
+        else
+            return "E" + number;
+    }
 }

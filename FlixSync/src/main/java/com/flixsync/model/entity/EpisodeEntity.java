@@ -1,5 +1,6 @@
 package com.flixsync.model.entity;
 
+import com.flixsync.model.dto.episode.EpisodeInputDTO;
 import com.flixsync.utils.DurationUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -8,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -41,28 +43,24 @@ public class EpisodeEntity {
         episodeId = new EpisodePK();
     }
 
-    public TvShowEntity getTvShow(){
-        return episodeId.getTvShow();
+    public EpisodeEntity(TvShowEntity tvShow, EpisodeInputDTO input){
+        BeanUtils.copyProperties(input, this);
+        EpisodePK episodeId = new EpisodePK(tvShow, input.getSeason(), input.getNumber());
+        this.setEpisodeId(episodeId);
+        Duration duration = DurationUtils.getDuration(null, input.getMinutes());
+        this.setDuration(duration);
     }
 
-    public void setTvShow(TvShowEntity tvShow){
-        episodeId.setTvShow(tvShow);
+    public TvShowEntity getTvShow(){
+        return episodeId.getTvShow();
     }
 
     public Integer getSeason(){
         return episodeId.getSeason();
     }
 
-    public void setSeason(Integer season){
-        episodeId.setSeason(season);
-    }
-
     public Integer getNumber(){
         return episodeId.getNumber();
-    }
-
-    public void setNumber(Integer number){
-        episodeId.setNumber(number);
     }
 
     @Override

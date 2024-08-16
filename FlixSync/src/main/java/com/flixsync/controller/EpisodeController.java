@@ -1,7 +1,10 @@
 package com.flixsync.controller;
 
 import com.flixsync.documentation.EpisodeControllerDoc;
+import com.flixsync.exceptions.DuplicatedKeyException;
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
+import com.flixsync.model.dto.episode.EpisodeInputDTO;
 import com.flixsync.model.dto.episode.EpisodeOutputDTO;
 import com.flixsync.service.EpisodeService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +33,13 @@ public class EpisodeController implements EpisodeControllerDoc {
         return new ResponseEntity<>(episodeService.findAllPerSeason(tvShowId, season), HttpStatus.OK);
     }
 
-    @Override public ResponseEntity<EpisodeOutputDTO> findById(Integer tvShowId, Integer season, Integer episodeNumber) throws EntityNotFoundException {
+    @Override
+    public ResponseEntity<EpisodeOutputDTO> findById(Integer tvShowId, Integer season, Integer episodeNumber) throws EntityNotFoundException {
         return new ResponseEntity<>(episodeService.findById(tvShowId, season, episodeNumber), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<EpisodeOutputDTO> save(Integer tvShowId, EpisodeInputDTO episodeInput) throws EntityNotFoundException, InvalidParameterException, DuplicatedKeyException {
+        return new ResponseEntity<>(episodeService.save(tvShowId, episodeInput), HttpStatus.OK);
     }
 }

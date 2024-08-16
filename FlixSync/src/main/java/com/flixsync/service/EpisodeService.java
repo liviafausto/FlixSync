@@ -1,6 +1,10 @@
 package com.flixsync.service;
 
+import com.flixsync.exceptions.DatabaseException;
+import com.flixsync.exceptions.DuplicatedKeyException;
 import com.flixsync.exceptions.EntityNotFoundException;
+import com.flixsync.exceptions.InvalidParameterException;
+import com.flixsync.model.dto.episode.EpisodeInputDTO;
 import com.flixsync.model.dto.episode.EpisodeOutputDTO;
 import com.flixsync.model.entity.EpisodeEntity;
 import com.flixsync.model.entity.EpisodePK;
@@ -9,6 +13,7 @@ import com.flixsync.repository.EpisodeRepository;
 import com.flixsync.utils.ListUtils;
 import com.flixsync.utils.PageUtils;
 import com.flixsync.utils.ServiceLog;
+import com.flixsync.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -70,6 +75,30 @@ public class EpisodeService {
         return episodeOutput;
     }
 
+    public EpisodeOutputDTO save(Integer tvShowId, EpisodeInputDTO episodeInput) throws EntityNotFoundException, InvalidParameterException, DuplicatedKeyException {
+        ServiceLog serviceLog = new ServiceLog("EPISODE-SAVE", "episode");
+        serviceLog.start("Register an episode of a TV show");
+
+        if(!StringUtils.valid(episodeInput.getDirector())){
+            serviceLog.error("The episode's director was not provided");
+            serviceLog.end();
+            throw new InvalidParameterException("director: can't be blank");
+        }
+
+        TvShowEntity tvShow = tvShowService.getTvShowById(tvShowId, serviceLog);
+        EpisodeEntity episode = new EpisodeEntity(tvShow, episodeInput);
+
+        checkForDuplicatedKey(episode.getEpisodeId(), serviceLog);
+        serviceLog.saveRequest(episodeInput.toString());
+
+        EpisodeEntity createdEpisode = episodeRepository.save(episode);
+        EpisodeOutputDTO episodeOutput = new EpisodeOutputDTO(createdEpisode);
+
+        serviceLog.saveResponse(episodeOutput.toString());
+        serviceLog.end();
+        return episodeOutput;
+    }
+
     protected EpisodeEntity getEpisodeById(EpisodePK episodeId, ServiceLog serviceLog) throws EntityNotFoundException {
         serviceLog.setElementName("episode");
         serviceLog.searchRequest(episodeId.toString());
@@ -84,5 +113,21 @@ public class EpisodeService {
         EpisodeEntity episode = optionalEpisode.get();
         serviceLog.searchResponse(episode.toString());
         return episode;
+    }
+
+    protected void checkForDuplicatedKey(EpisodePK episodeId, ServiceLog serviceLog) throws DuplicatedKeyException {
+        serviceLog.setElementName("episode");
+        serviceLog.searchRequest(episodeId.toString());
+
+        Optional<EpisodeEntity> duplicatedEpisode = episodeRepository.findById(episodeId);
+
+        if(duplicatedEpisode.isEmpty()){
+            serviceLog.info("Episode not found");
+        } else {
+            serviceLog.searchResponse(duplicatedEpisode.get().toString());
+            serviceLog.error("Duplicated key: the episode's ID already exists in the database");
+            serviceLog.end();
+            throw new DuplicatedKeyException("Episode '" + episodeId.formatted() + "' already exists");
+        }
     }
 }

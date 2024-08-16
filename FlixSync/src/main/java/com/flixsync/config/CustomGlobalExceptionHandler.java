@@ -1,6 +1,7 @@
 package com.flixsync.config;
 
 import com.flixsync.exceptions.DatabaseException;
+import com.flixsync.exceptions.DuplicatedKeyException;
 import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
 import jakarta.validation.ConstraintViolationException;
@@ -57,6 +58,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(InvalidParameterException.class)
     public ResponseEntity<Object> handleException(InvalidParameterException exception) {
+        final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(STATUS).body(createBody(exception.getMessage(), STATUS));
+    }
+
+    @ExceptionHandler(DuplicatedKeyException.class)
+    public ResponseEntity<Object> handleException(DuplicatedKeyException exception) {
         final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(STATUS).body(createBody(exception.getMessage(), STATUS));
     }

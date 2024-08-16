@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/categories/{id}/tv-shows-list")
+@RequestMapping("/api/categories/{id}/tv-shows-list")
 @RequiredArgsConstructor
 public class TvShowCategoryController implements TvShowCategoryControllerDoc {
     final TvShowCategoryService tvShowCategoryService;

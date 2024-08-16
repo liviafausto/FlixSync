@@ -16,7 +16,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/tv-shows/{id}/episodes")
+@RequestMapping("/api/tv-shows/{id}/episodes")
 @RequiredArgsConstructor
 public class EpisodeController implements EpisodeControllerDoc {
     private final EpisodeService episodeService;

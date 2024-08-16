@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/tv-shows")
+@RequestMapping("/api/tv-shows")
 @RequiredArgsConstructor
 public class TvShowController implements TvShowControllerDoc {
     private final TvShowService tvShowService;

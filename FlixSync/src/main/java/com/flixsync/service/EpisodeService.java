@@ -1,6 +1,5 @@
 package com.flixsync.service;
 
-import com.flixsync.exceptions.DatabaseException;
 import com.flixsync.exceptions.DuplicatedKeyException;
 import com.flixsync.exceptions.EntityNotFoundException;
 import com.flixsync.exceptions.InvalidParameterException;
@@ -10,16 +9,16 @@ import com.flixsync.model.entity.EpisodeEntity;
 import com.flixsync.model.entity.EpisodePK;
 import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.EpisodeRepository;
-import com.flixsync.utils.ListUtils;
-import com.flixsync.utils.PageUtils;
-import com.flixsync.utils.ServiceLog;
-import com.flixsync.utils.StringUtils;
+import com.flixsync.utils.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +76,7 @@ public class EpisodeService {
 
     public EpisodeOutputDTO save(Integer tvShowId, EpisodeInputDTO episodeInput) throws EntityNotFoundException, InvalidParameterException, DuplicatedKeyException {
         ServiceLog serviceLog = new ServiceLog("EPISODE-SAVE", "episode");
-        serviceLog.start("Register an episode of a TV show");
+        serviceLog.start("Register an episode");
 
         if(!StringUtils.valid(episodeInput.getDirector())){
             serviceLog.error("The episode's director was not provided");
@@ -92,11 +91,50 @@ public class EpisodeService {
         serviceLog.saveRequest(episodeInput.toString());
 
         EpisodeEntity createdEpisode = episodeRepository.save(episode);
-        EpisodeOutputDTO episodeOutput = new EpisodeOutputDTO(createdEpisode);
+        EpisodeOutputDTO createdEpisodeOutput = new EpisodeOutputDTO(createdEpisode);
 
-        serviceLog.saveResponse(episodeOutput.toString());
+        serviceLog.saveResponse(createdEpisodeOutput.toString());
         serviceLog.end();
-        return episodeOutput;
+        return createdEpisodeOutput;
+    }
+
+    public EpisodeOutputDTO update(Integer tvShowId, EpisodeInputDTO episodeInput) throws EntityNotFoundException, InvalidParameterException {
+        ServiceLog serviceLog = new ServiceLog("EPISODE-UPDATE", "episode");
+        serviceLog.start("Update an episode by ID");
+
+        if(noParametersProvided(episodeInput)){
+            serviceLog.error("No parameters were provided");
+            serviceLog.end();
+            throw new InvalidParameterException("At least one parameter has to be provided");
+        }
+
+        // Obtain the episode that will be updated
+        TvShowEntity tvShow = tvShowService.getTvShowById(tvShowId, serviceLog);
+        EpisodePK episodeId = new EpisodePK(tvShow, episodeInput.getSeason(), episodeInput.getNumber());
+        EpisodeEntity episode = getEpisodeById(episodeId, serviceLog);
+
+        // Validate which parameters will be updated and which will stay the same
+        final List<String> attributes = new ArrayList<>(Arrays.asList("name", "duration", "release date", "director", "summary"));
+        final HashMap<String, Object> currentParams = getHashMapFromEntity(episode);
+        HashMap<String, Object> newParams = getHashMapFromInput(episodeInput);
+        newParams = UpdateUtils.adjustParameters(attributes, currentParams, newParams);
+
+        if(newParams == null){
+            serviceLog.error("No new data was provided, so nothing will be updated");
+            serviceLog.end();
+            throw new InvalidParameterException("No new data was provided");
+        }
+
+        // Update data
+        adjustEntityForUpdate(episode, newParams);
+        serviceLog.updateRequest(episodeId.toString(), episode.toString());
+
+        EpisodeEntity updatedEpisode = episodeRepository.save(episode);
+        EpisodeOutputDTO updatedEpisodeOutput = new EpisodeOutputDTO(updatedEpisode);
+
+        serviceLog.updateResponse(updatedEpisode.toString());
+        serviceLog.end();
+        return updatedEpisodeOutput;
     }
 
     protected EpisodeEntity getEpisodeById(EpisodePK episodeId, ServiceLog serviceLog) throws EntityNotFoundException {
@@ -130,4 +168,54 @@ public class EpisodeService {
             throw new DuplicatedKeyException("Episode '" + episodeId.formatted() + "' already exists");
         }
     }
+
+    private boolean noParametersProvided(EpisodeInputDTO input){
+        return input.getName() == null
+                && input.getMinutes() == null
+                && input.getReleaseDate() == null
+                && input.getDirector() == null
+                && input.getSummary() == null;
+    }
+
+    private HashMap<String, Object> getHashMapFromEntity(EpisodeEntity episode){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", episode.getName());
+        map.put("duration", episode.getDuration());
+        map.put("release date", episode.getReleaseDate());
+        map.put("director", episode.getDirector());
+        map.put("summary", episode.getSummary());
+        return map;
+    }
+
+    private HashMap<String, Object> getHashMapFromInput(EpisodeInputDTO episodeInput){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", episodeInput.getName());
+        map.put("duration", episodeInput.getMinutes());
+        map.put("release date", episodeInput.getReleaseDate());
+        map.put("director", episodeInput.getDirector());
+        map.put("summary", episodeInput.getSummary());
+        return map;
+    }
+
+    private EpisodeEntity getEpisodeWithUpdatedParams(EpisodePK episodeId, HashMap<String, Object> updatedParams){
+        EpisodeEntity episode = new EpisodeEntity();
+        episode.setEpisodeId(episodeId);
+
+        episode.setName((String) updatedParams.get("name"));
+        episode.setDuration((Duration) updatedParams.get("duration"));
+        episode.setReleaseDate((LocalDate) updatedParams.get("release date"));
+        episode.setDirector((String) updatedParams.get("director"));
+        episode.setSummary((String) updatedParams.get("summary"));
+
+        return episode;
+    }
+
+    private void adjustEntityForUpdate(EpisodeEntity episode, HashMap<String, Object> newParams){
+        episode.setName((String) newParams.get("name"));
+        episode.setDuration((Duration) newParams.get("duration"));
+        episode.setReleaseDate((LocalDate) newParams.get("release date"));
+        episode.setDirector((String) newParams.get("director"));
+        episode.setSummary((String) newParams.get("summary"));
+    }
+
 }

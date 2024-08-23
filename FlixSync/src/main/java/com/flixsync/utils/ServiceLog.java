@@ -61,6 +61,10 @@ public class ServiceLog {
         log.info("{} Updating {}'s {} --> {id='{}', current='{}', new='{}'}", SERVICE_NAME, elementName, attribute, id, currentValue, newValue);
     }
 
+    public void updateRequest(String idToString, String body){
+        log.info("{} Updating {} {} to --> {}", SERVICE_NAME, elementName, idToString, body);
+    }
+
     public void updateResponse(String body){
         final String capitalizedElementName = StringUtils.firstLetterToUpperCase(elementName);
         log.info("{} {} updated --> {}", SERVICE_NAME, capitalizedElementName, body);

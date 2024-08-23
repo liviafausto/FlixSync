@@ -42,4 +42,9 @@ public class EpisodeController implements EpisodeControllerDoc {
     public ResponseEntity<EpisodeOutputDTO> save(Integer tvShowId, EpisodeInputDTO episodeInput) throws EntityNotFoundException, InvalidParameterException, DuplicatedKeyException {
         return new ResponseEntity<>(episodeService.save(tvShowId, episodeInput), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<EpisodeOutputDTO> update(Integer tvShowId, EpisodeInputDTO episodeInput) throws EntityNotFoundException, InvalidParameterException {
+        return new ResponseEntity<>(episodeService.update(tvShowId, episodeInput), HttpStatus.OK);
+    }
 }

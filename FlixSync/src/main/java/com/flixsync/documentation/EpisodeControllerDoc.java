@@ -129,10 +129,39 @@ public interface EpisodeControllerDoc {
                     })
             }
     )
-    @PutMapping
+    @PostMapping
     ResponseEntity<EpisodeOutputDTO> save(
             @PathVariable(name = "id") @Positive Integer tvShowId,
             @RequestBody @Valid EpisodeInputDTO episodeInput
     ) throws EntityNotFoundException, InvalidParameterException, DuplicatedKeyException;
+
+    @Operation(
+            summary = "Update an episode by id",
+            description = "Updates any part of the data of a specified episode, except its own id."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Returns the updated data of the episode", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = EpisodeOutputDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Invalid parameter provided", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "403", description = "You don't have permission to access this resource", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "TV show/Episode not found", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    }),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+                    })
+            }
+    )
+    @PutMapping
+    ResponseEntity<EpisodeOutputDTO> update(
+            @PathVariable(name = "id") @Positive Integer tvShowId,
+            @RequestBody @Valid EpisodeInputDTO episodeInput
+    ) throws EntityNotFoundException, InvalidParameterException;
 
 }

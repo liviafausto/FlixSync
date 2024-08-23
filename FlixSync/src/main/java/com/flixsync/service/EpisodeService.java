@@ -11,8 +11,6 @@ import com.flixsync.model.entity.TvShowEntity;
 import com.flixsync.repository.EpisodeRepository;
 import com.flixsync.utils.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -195,19 +193,6 @@ public class EpisodeService {
         map.put("director", episodeInput.getDirector());
         map.put("summary", episodeInput.getSummary());
         return map;
-    }
-
-    private EpisodeEntity getEpisodeWithUpdatedParams(EpisodePK episodeId, HashMap<String, Object> updatedParams){
-        EpisodeEntity episode = new EpisodeEntity();
-        episode.setEpisodeId(episodeId);
-
-        episode.setName((String) updatedParams.get("name"));
-        episode.setDuration((Duration) updatedParams.get("duration"));
-        episode.setReleaseDate((LocalDate) updatedParams.get("release date"));
-        episode.setDirector((String) updatedParams.get("director"));
-        episode.setSummary((String) updatedParams.get("summary"));
-
-        return episode;
     }
 
     private void adjustEntityForUpdate(EpisodeEntity episode, HashMap<String, Object> newParams){
